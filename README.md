@@ -58,10 +58,10 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 | `app/schemas/song.py` | Pydantic API contracts for songs: `SongCreate`, `SongUpdate`, `SongRead`. |
 | `app/schemas/playlist.py` | Pydantic API contracts for playlists: `PlaylistCreate`, `PlaylistUpdate`, `PlaylistRead`. |
 | `app/routes/health.py` | Healthcheck endpoint for service status. |
-| `app/routes/songs.py` | HTTP endpoints for listing and creating songs. |
-| `app/routes/playlists.py` | HTTP endpoints for listing and creating playlists. |
-| `app/services/song_service.py` | Database operations used by song routes (list/create). |
-| `app/services/playlist_service.py` | Database operations used by playlist routes (list/create). |
+| `app/routes/songs.py` | HTTP endpoints for full song CRUD operations. |
+| `app/routes/playlists.py` | HTTP endpoints for full playlist CRUD operations. |
+| `app/services/song_service.py` | Database operations used by song routes (create/read/update/delete). |
+| `app/services/playlist_service.py` | Database operations used by playlist routes (create/read/update/delete). |
 
 ### Layer flow
 
@@ -99,28 +99,18 @@ uvicorn app.main:app --reload
 - `GET /health`
 - `GET /songs/`
 - `POST /songs/`
-- `GET /playlists/`
-- `POST /playlists/`
-
-## Planned CRUD route map
-
-Full planning details are documented in [CRUD_ENDPOINT_PLAN.md](./CRUD_ENDPOINT_PLAN.md).
-
-### Songs
-
-- `POST /songs/`
-- `GET /songs/`
 - `GET /songs/{song_id}`
 - `PATCH /songs/{song_id}`
 - `DELETE /songs/{song_id}`
-
-### Playlists
-
-- `POST /playlists/`
 - `GET /playlists/`
+- `POST /playlists/`
 - `GET /playlists/{playlist_id}`
 - `PATCH /playlists/{playlist_id}`
 - `DELETE /playlists/{playlist_id}`
+
+## CRUD planning reference
+
+Initial planning notes are documented in [CRUD_ENDPOINT_PLAN.md](./CRUD_ENDPOINT_PLAN.md).
 
 ## Current database note
 
