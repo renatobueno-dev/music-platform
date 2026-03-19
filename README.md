@@ -21,6 +21,7 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 ├── DOMAIN_SCOPE.md
 ├── README.md
 ├── STAGE_2_DOCKER_GUIDE.md
+├── STAGE_3_K8S_CONCEPT_MAP.md
 ├── docker-compose.yml
 ├── requirements.txt
 └── app
@@ -58,6 +59,7 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 | `docker-compose.yml` | Orchestrates API + PostgreSQL services for local multi-container runs. |
 | `.env.example` | Documents environment variables for Compose configuration. |
 | `STAGE_2_DOCKER_GUIDE.md` | Step-by-step Stage 2 guide (A to E) with validation and troubleshooting checks. |
+| `STAGE_3_K8S_CONCEPT_MAP.md` | Conceptual translation from Docker/Compose to Kubernetes/Helm resources. |
 | `app/main.py` | API entry point, application creation, router registration, and startup table creation. |
 | `app/database.py` | SQLAlchemy engine/session setup and FastAPI dependency provider (`get_session`). |
 | `app/models/base.py` | Shared SQLAlchemy declarative base class. |
@@ -106,6 +108,11 @@ uvicorn app.main:app --reload
 
 Detailed execution plan for Stage 2 Steps A to E:
 - [STAGE_2_DOCKER_GUIDE.md](./STAGE_2_DOCKER_GUIDE.md)
+
+## Stage 3 Kubernetes planning
+
+Conceptual translation for Phase 2 (before writing manifests):
+- [STAGE_3_K8S_CONCEPT_MAP.md](./STAGE_3_K8S_CONCEPT_MAP.md)
 
 ## Implemented endpoints (current)
 
