@@ -31,6 +31,14 @@ spec:
                 secretKeyRef:
                   name: {{ include "music-platform.secretName" . }}
                   key: DATABASE_URL
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: {{ .Values.api.probes.startup.initialDelaySeconds }}
+            periodSeconds: {{ .Values.api.probes.startup.periodSeconds }}
+            timeoutSeconds: {{ .Values.api.probes.startup.timeoutSeconds }}
+            failureThreshold: {{ .Values.api.probes.startup.failureThreshold }}
           readinessProbe:
             httpGet:
               path: /health

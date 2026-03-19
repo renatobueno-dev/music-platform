@@ -13,6 +13,11 @@ api:
   containerPort: 8000
   resources: {}
   probes:
+    startup:
+      initialDelaySeconds: 0
+      periodSeconds: 2
+      timeoutSeconds: 2
+      failureThreshold: 30
     liveness:
       initialDelaySeconds: 10
       periodSeconds: 10

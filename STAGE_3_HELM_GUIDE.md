@@ -39,9 +39,32 @@ helm/music-platform/
 
 - API image repo/tag/pull policy.
 - API replica count and service type/port.
+- API health probes (`startup`, `readiness`, `liveness`) for startup and runtime stability.
 - DB image repo/tag/pull policy.
 - DB name/user/password.
 - DB persistence toggle, storage size, and optional storage class.
+
+## Probe tuning for smoother startup
+
+The API Deployment includes all three HTTP probes at `/health`:
+
+- `startupProbe`: allows extra warm-up time before liveness/readiness are enforced.
+- `readinessProbe`: marks the pod ready to receive traffic.
+- `livenessProbe`: restarts a stuck process.
+
+Default startup values in `values.yaml`:
+
+```yaml
+api:
+  probes:
+    startup:
+      initialDelaySeconds: 0
+      periodSeconds: 2
+      timeoutSeconds: 2
+      failureThreshold: 30
+```
+
+This gives the container up to ~60 seconds to finish startup before Kubernetes treats it as failed.
 
 ## Validate chart locally
 

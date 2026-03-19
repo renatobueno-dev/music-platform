@@ -64,7 +64,7 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 | `STAGE_3_K8S_CONCEPT_MAP.md` | Conceptual translation from Docker/Compose to Kubernetes/Helm resources. |
 | `STAGE_3_HELM_GUIDE.md` | Helm chart structure and install/lint commands for Stage 3 Phase 3. |
 | `helm/music-platform` | Helm chart containing metadata, configurable values, and Kubernetes templates. |
-| `app/main.py` | API entry point, application creation, router registration, and startup table creation. |
+| `app/main.py` | API entry point, application creation, router registration, and startup DB initialization with retry. |
 | `app/database.py` | SQLAlchemy engine/session setup and FastAPI dependency provider (`get_session`). |
 | `app/models/base.py` | Shared SQLAlchemy declarative base class. |
 | `app/models/song.py` | `Song` ORM model and relationship to playlists. |
@@ -163,3 +163,12 @@ Initial planning notes are documented in [CRUD_ENDPOINT_PLAN.md](./CRUD_ENDPOINT
 This project currently uses `Base.metadata.create_all(...)` (no migration tool yet).
 If you change model columns after creating `music.db`, recreate the database file
 or add migrations (for example with Alembic) in the next stage.
+
+## Startup resilience knobs
+
+For environments where DB startup can be slower than API boot, use:
+
+- `STARTUP_DB_MAX_RETRIES` (default: `20`)
+- `STARTUP_DB_RETRY_SECONDS` (default: `2`)
+
+In Kubernetes, API startup behavior is also controlled by Helm probe values in `helm/music-platform/values.yaml` under `api.probes.startup`.
