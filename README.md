@@ -93,7 +93,7 @@ uvicorn app.main:app --reload
 - Swagger UI: `http://127.0.0.1:8000/docs`
 - ReDoc: `http://127.0.0.1:8000/redoc`
 
-## Initial endpoints
+## Implemented endpoints (current)
 
 - `GET /`
 - `GET /health`
@@ -101,6 +101,26 @@ uvicorn app.main:app --reload
 - `POST /songs/`
 - `GET /playlists/`
 - `POST /playlists/`
+
+## Planned CRUD route map
+
+Full planning details are documented in [CRUD_ENDPOINT_PLAN.md](./CRUD_ENDPOINT_PLAN.md).
+
+### Songs
+
+- `POST /songs/`
+- `GET /songs/`
+- `GET /songs/{song_id}`
+- `PATCH /songs/{song_id}`
+- `DELETE /songs/{song_id}`
+
+### Playlists
+
+- `POST /playlists/`
+- `GET /playlists/`
+- `GET /playlists/{playlist_id}`
+- `PATCH /playlists/{playlist_id}`
+- `DELETE /playlists/{playlist_id}`
 
 ## Current database note
 
