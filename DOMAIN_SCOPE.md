@@ -10,7 +10,9 @@ A song represents one music item available in the platform.
 - `title` (string, required)
 - `artist` (string, required)
 - `album` (string, optional)
+- `genre` (string, optional)
 - `duration_seconds` (int, optional)
+- `release_date` (date, optional)
 - `release_year` (int, optional)
 - `created_at` (datetime, auto-generated)
 
@@ -32,7 +34,7 @@ A playlist represents a user-curated collection of songs.
 - Relationship type: many-to-many
 - One playlist contains many songs
 - One song can be present in many playlists
-- Association table: `playlist_songs`
+- Association table: `playlist_songs` (join model)
   - `playlist_id` (FK -> playlists.id)
   - `song_id` (FK -> songs.id)
   - `added_at` (datetime, auto-generated)

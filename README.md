@@ -101,3 +101,9 @@ uvicorn app.main:app --reload
 - `POST /songs/`
 - `GET /playlists/`
 - `POST /playlists/`
+
+## Current database note
+
+This project currently uses `Base.metadata.create_all(...)` (no migration tool yet).
+If you change model columns after creating `music.db`, recreate the database file
+or add migrations (for example with Alembic) in the next stage.
