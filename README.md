@@ -23,6 +23,7 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 ├── STAGE_2_DOCKER_GUIDE.md
 ├── STAGE_3_HELM_GUIDE.md
 ├── STAGE_3_K8S_CONCEPT_MAP.md
+├── STAGE_4_ISTIO_READINESS_GUIDE.md
 ├── STAGE_4_ISTIO_TRAFFIC_GUIDE.md
 ├── docker-compose.yml
 ├── helm/
@@ -64,6 +65,7 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 | `STAGE_2_DOCKER_GUIDE.md` | Step-by-step Stage 2 guide (A to E) with validation and troubleshooting checks. |
 | `STAGE_3_K8S_CONCEPT_MAP.md` | Conceptual translation from Docker/Compose to Kubernetes/Helm resources. |
 | `STAGE_3_HELM_GUIDE.md` | Helm chart structure and install/lint commands for Stage 3 Phase 3. |
+| `STAGE_4_ISTIO_READINESS_GUIDE.md` | Stage 4 Phase 1 Istio readiness checklist and validation flow. |
 | `STAGE_4_ISTIO_TRAFFIC_GUIDE.md` | Stage 4 Phase 2 traffic entry path and Istio routing setup. |
 | `helm/music-platform` | Helm chart containing metadata, configurable values, and Kubernetes templates. |
 | `app/main.py` | API entry point, application creation, router registration, and startup DB initialization with retry. |
@@ -125,7 +127,10 @@ Conceptual translation for Phase 2 (before writing manifests):
 Phase 3 chart structure and usage:
 - [STAGE_3_HELM_GUIDE.md](./STAGE_3_HELM_GUIDE.md)
 
-## Stage 4 Istio traffic management
+## Stage 4 Istio
+
+Phase 1 readiness checklist:
+- [STAGE_4_ISTIO_READINESS_GUIDE.md](./STAGE_4_ISTIO_READINESS_GUIDE.md)
 
 Phase 2 traffic path and routing setup:
 - [STAGE_4_ISTIO_TRAFFIC_GUIDE.md](./STAGE_4_ISTIO_TRAFFIC_GUIDE.md)
