@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: playcatch-gateway
+  namespace: music-platform
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - playcatch.local
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: playcatch-api-ingress
+  namespace: music-platform
+spec:
+  hosts:
+    - playcatch.local
+  gateways:
+    - playcatch-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: music-platform-api.music-platform.svc.cluster.local
+            port:
+              number: 8000
