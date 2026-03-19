@@ -20,6 +20,7 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 ├── Dockerfile
 ├── DOMAIN_SCOPE.md
 ├── README.md
+├── STAGE_2_DOCKER_GUIDE.md
 ├── docker-compose.yml
 ├── requirements.txt
 └── app
@@ -56,6 +57,7 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 | `Dockerfile` | Defines the container runtime for the API service. |
 | `docker-compose.yml` | Orchestrates API + PostgreSQL services for local multi-container runs. |
 | `.env.example` | Documents environment variables for Compose configuration. |
+| `STAGE_2_DOCKER_GUIDE.md` | Step-by-step Stage 2 guide (A to E) with validation and troubleshooting checks. |
 | `app/main.py` | API entry point, application creation, router registration, and startup table creation. |
 | `app/database.py` | SQLAlchemy engine/session setup and FastAPI dependency provider (`get_session`). |
 | `app/models/base.py` | Shared SQLAlchemy declarative base class. |
@@ -102,40 +104,8 @@ uvicorn app.main:app --reload
 
 ## Stage 2 containerization
 
-### Step A - Frozen startup contract
-
-- FastAPI entrypoint: `app.main:app`
-- Dependencies file: `requirements.txt`
-- Service port: `8000`
-- Runtime command: `uvicorn app.main:app --host 0.0.0.0 --port 8000`
-
-### Build and run with Docker
-
-```bash
-docker build -t music-platform-api:latest .
-docker run --rm -p 8000:8000 music-platform-api:latest
-```
-
-### Run API + DB with Docker Compose
-
-1. Copy `.env.example` to `.env` and adjust values if needed.
-2. Start stack:
-
-```bash
-docker compose up --build
-```
-
-3. Stop stack:
-
-```bash
-docker compose down
-```
-
-4. Stop stack and remove DB volume:
-
-```bash
-docker compose down -v
-```
+Detailed execution plan for Stage 2 Steps A to E:
+- [STAGE_2_DOCKER_GUIDE.md](./STAGE_2_DOCKER_GUIDE.md)
 
 ## Implemented endpoints (current)
 
