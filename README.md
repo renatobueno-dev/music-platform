@@ -55,8 +55,8 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 | `app/models/song.py` | `Song` ORM model and relationship to playlists. |
 | `app/models/playlist.py` | `Playlist` ORM model and relationship to songs. |
 | `app/models/playlist_song.py` | Association table model for the many-to-many relation and `added_at` metadata. |
-| `app/schemas/song.py` | Pydantic request/response schemas for song payload validation and serialization. |
-| `app/schemas/playlist.py` | Pydantic request/response schemas for playlist payload validation and serialization. |
+| `app/schemas/song.py` | Pydantic API contracts for songs: `SongCreate`, `SongUpdate`, `SongRead`. |
+| `app/schemas/playlist.py` | Pydantic API contracts for playlists: `PlaylistCreate`, `PlaylistUpdate`, `PlaylistRead`. |
 | `app/routes/health.py` | Healthcheck endpoint for service status. |
 | `app/routes/songs.py` | HTTP endpoints for listing and creating songs. |
 | `app/routes/playlists.py` | HTTP endpoints for listing and creating playlists. |
