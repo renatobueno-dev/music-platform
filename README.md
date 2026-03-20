@@ -14,6 +14,9 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 
 ```text
 .
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
 ├── .dockerignore
 ├── .env.example
 ├── .gitignore
@@ -23,6 +26,7 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 ├── STAGE_2_DOCKER_GUIDE.md
 ├── STAGE_3_HELM_GUIDE.md
 ├── STAGE_3_K8S_CONCEPT_MAP.md
+├── STAGE_4_GITHUB_ACTIONS_GUIDE.md
 ├── STAGE_4_ISTIO_READINESS_GUIDE.md
 ├── STAGE_4_ISTIO_SECURITY_GUIDE.md
 ├── STAGE_4_ISTIO_TRAFFIC_GUIDE.md
@@ -63,9 +67,11 @@ See [DOMAIN_SCOPE.md](./DOMAIN_SCOPE.md) for detailed fields and relationship de
 | `Dockerfile` | Defines the container runtime for the API service. |
 | `docker-compose.yml` | Orchestrates API + PostgreSQL services for local multi-container runs. |
 | `.env.example` | Documents environment variables for Compose configuration. |
+| `.github/workflows/deploy.yml` | GitHub Actions workflow for validation, image build/push, and automated deploy. |
 | `STAGE_2_DOCKER_GUIDE.md` | Step-by-step Stage 2 guide (A to E) with validation and troubleshooting checks. |
 | `STAGE_3_K8S_CONCEPT_MAP.md` | Conceptual translation from Docker/Compose to Kubernetes/Helm resources. |
 | `STAGE_3_HELM_GUIDE.md` | Helm chart structure and install/lint commands for Stage 3 Phase 3. |
+| `STAGE_4_GITHUB_ACTIONS_GUIDE.md` | Stage 4 Phase 4 CI/CD automation model with triggers, deploy steps, and logs. |
 | `STAGE_4_ISTIO_READINESS_GUIDE.md` | Stage 4 Phase 1 Istio readiness checklist and validation flow. |
 | `STAGE_4_ISTIO_SECURITY_GUIDE.md` | Stage 4 Phase 3 security policy model and Istio protection rules. |
 | `STAGE_4_ISTIO_TRAFFIC_GUIDE.md` | Stage 4 Phase 2 traffic entry path and Istio routing setup. |
@@ -129,7 +135,7 @@ Conceptual translation for Phase 2 (before writing manifests):
 Phase 3 chart structure and usage:
 - [STAGE_3_HELM_GUIDE.md](./STAGE_3_HELM_GUIDE.md)
 
-## Stage 4 Istio
+## Stage 4 Runtime And Automation
 
 Phase 1 readiness checklist:
 - [STAGE_4_ISTIO_READINESS_GUIDE.md](./STAGE_4_ISTIO_READINESS_GUIDE.md)
@@ -139,6 +145,9 @@ Phase 2 traffic path and routing setup:
 
 Phase 3 security policies:
 - [STAGE_4_ISTIO_SECURITY_GUIDE.md](./STAGE_4_ISTIO_SECURITY_GUIDE.md)
+
+Phase 4 GitHub Actions automation:
+- [STAGE_4_GITHUB_ACTIONS_GUIDE.md](./STAGE_4_GITHUB_ACTIONS_GUIDE.md)
 
 ## Implemented endpoints (current)
 
