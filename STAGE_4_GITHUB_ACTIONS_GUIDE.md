@@ -24,6 +24,7 @@ Validation job:
 - Compile Python modules (`python -m compileall app`).
 - Build Docker image (validation build).
 - Install Helm and Terraform CLIs.
+  - Uses pinned versions and retry-enabled downloads to reduce transient network failures.
 - Run `helm lint`.
 - Render chart with `helm template`.
 - Run Terraform checks:
@@ -37,6 +38,7 @@ Deploy job:
   - `ghcr.io/<owner>/music-platform-api:<sha>`
   - `ghcr.io/<owner>/music-platform-api:latest`
 - Install `kubectl`, Helm, and Terraform CLIs.
+  - Uses pinned versions and retry-enabled downloads.
 - Configure kubeconfig from repository secret `KUBE_CONFIG_DATA` (base64 kubeconfig).
 - Apply Terraform foundation:
   - `terraform init`
@@ -66,6 +68,8 @@ Deploy secret guard:
 4. Action runtime compatibility:
    - Workflow sets `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true`.
    - Helm/Terraform setup is handled by CLI steps to reduce dependency on deprecated Node.js 20 actions.
+5. Tooling stability:
+   - Workflow pins CLI versions (`kubectl`, `helm`, `terraform`) and uses retry flags for download commands.
 
 ## Success and failure signals in logs
 
