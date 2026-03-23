@@ -1,6 +1,6 @@
-# Stage 4 - Terraform Scope Definition (Phase 5, Step 1)
+# Terraform Scope
 
-This step defines what Terraform owns before writing any `.tf` resources.
+Defines what Terraform owns before writing any `.tf` resources.
 
 ## Goal of this phase
 
@@ -37,11 +37,6 @@ Terraform does not own:
   - Helm = application release packaging.
   - GitHub Actions = automated build/deploy execution.
 
-## Initial target set for Terraform (Step 1 decision)
+## Final scope decision
 
-The first Terraform implementation should target only:
-
-1. `kubernetes_namespace` for `music-platform`.
-2. Namespace labels/annotations required for Istio injection behavior.
-
-Future expansion can include additional platform prerequisites after this baseline is stable.
+See [min-scope.md](./min-scope.md) for the locked minimum scope. Future expansion starts from that baseline.

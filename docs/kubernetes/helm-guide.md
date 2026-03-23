@@ -1,6 +1,6 @@
-# Stage 3 - Helm Chart Structure (Phase 3)
+# Helm Chart Guide
 
-This phase organizes Kubernetes deployment into a reusable Helm chart.
+Organises Kubernetes deployment into a reusable Helm chart.
 
 ## Chart location
 
@@ -21,7 +21,8 @@ helm/music-platform/
     ├── configmap.yaml
     ├── db-service.yaml
     ├── db-statefulset.yaml
-    └── secret.yaml
+    ├── secret.yaml
+    └── serviceaccounts.yaml
 ```
 
 ## What each part does
@@ -33,6 +34,7 @@ helm/music-platform/
 - `templates/db-*.yaml`: PostgreSQL runtime and service identity.
 - `templates/configmap.yaml`: non-sensitive DB configuration.
 - `templates/secret.yaml`: sensitive values, including `DATABASE_URL`.
+- `templates/serviceaccounts.yaml`: dedicated service accounts for the API and DB workloads. Identity names are defined in [security.md](../istio/security.md).
 - `templates/NOTES.txt`: post-install access instructions.
 
 ## Main configurable values

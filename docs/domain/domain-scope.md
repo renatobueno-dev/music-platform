@@ -1,4 +1,6 @@
-# Stage 1 - Domain Scope
+# Domain Scope
+
+> Original domain planning document. For authoritative field tables with constraints, see [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 ## Resource: Song
 

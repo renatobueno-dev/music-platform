@@ -1,6 +1,6 @@
-# Stage 4 - Istio Security Policies (Phase 3)
+# Istio Security
 
-This phase defines protection rules after traffic mapping is clear.
+Defines mTLS enforcement and access control policies after traffic routing is established.
 
 ## Security model
 

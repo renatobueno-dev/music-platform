@@ -1,6 +1,6 @@
-# Stage 4 - Terraform vs Helm Separation (Phase 5, Step 2)
+# Terraform vs Helm Boundary
 
-This step defines the operational boundary between Terraform and Helm.
+Defines the operational ownership boundary between Terraform and Helm.
 
 ## Core rule
 
@@ -44,12 +44,6 @@ GitHub Actions owns:
 3. Keep Helm focused on application release resources.
 4. If a resource changes ownership, migrate it explicitly (import/state move) before dual-management risk appears.
 
-## Practical checkpoint for this project
+## Scope checkpoint
 
-Current project intent:
-
-- Terraform target scope (initial): namespace and namespace labels/annotations.
-- Helm target scope: all chart-managed app resources in `helm/music-platform`.
-- Istio app-level manifests remain in app delivery path (`k8s/istio`) unless future scope changes.
-
-If these boundaries are respected, Step 2 is complete.
+The locked minimum Terraform scope for this project is defined in [min-scope.md](./min-scope.md). The boundary rules above apply to any future expansion beyond that minimum.

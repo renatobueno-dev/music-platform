@@ -1,6 +1,6 @@
-# Stage 2 - Docker Workflow (Steps A to E)
+# Docker Workflow
 
-Stage 2 focuses on portability and reproducibility.
+Focuses on portability and reproducibility.
 The target is not only "it works on my machine", but "it works the same way in containers."
 
 ## Prerequisites

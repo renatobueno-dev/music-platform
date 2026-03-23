@@ -1,6 +1,6 @@
-# Stage 4 - Minimum Valid Terraform Scope (Phase 5, Step 3)
+# Minimum Terraform Scope
 
-This step locks the smallest valid Terraform scope for checkpoint delivery.
+Locks the smallest valid Terraform scope for this project.
 
 ## Decision
 

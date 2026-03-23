@@ -1,6 +1,6 @@
-# Stage 4 - Istio Readiness (Phase 1)
+# Istio Readiness
 
-This phase confirms the cluster is ready to apply Istio traffic and security behavior.
+Confirms the cluster is ready to apply Istio traffic and security behaviour.
 
 ## Objective
 

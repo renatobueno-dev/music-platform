@@ -1,6 +1,6 @@
-# Stage 4 - Istio Traffic Management (Phase 2)
+# Istio Traffic Management
 
-This phase defines a clear request path before introducing advanced mesh features.
+Defines the external and internal request path through the Istio mesh.
 
 ## Traffic path
 

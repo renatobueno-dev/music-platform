@@ -1,6 +1,6 @@
-# Stage 4 - GitHub Actions Automation (Phase 4)
+# GitHub Actions
 
-This phase turns manual deployment steps into a reproducible CI/CD workflow.
+Automates validation, build/push, and deployment into a reproducible CI/CD workflow.
 
 ## Workflow file
 

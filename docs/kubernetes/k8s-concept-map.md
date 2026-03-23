@@ -1,7 +1,6 @@
-# Stage 3 - Kubernetes Concept Translation (Phase 2)
+# Kubernetes Concept Map
 
-This phase is a design translation step only.
-No Kubernetes YAML is created yet.
+Design translation step: maps every Docker/Compose concept to its Kubernetes equivalent before writing any YAML.
 
 ## Goal of the translation
 

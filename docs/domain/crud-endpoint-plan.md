@@ -1,4 +1,4 @@
-# CRUD Endpoint Plan (Step 5)
+# CRUD Endpoint Plan
 
 This document defines the complete CRUD route map before implementing the missing endpoints.
 
@@ -16,7 +16,7 @@ This document defines the complete CRUD route map before implementing the missin
 
 | Operation | Method | Path | Request Schema | Response Schema | Success Status | Error Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| Create playlist | `POST` | `/playlists/` | `PlaylistCreate` | `PlaylistRead` | `201` | `422` |
+| Create playlist | `POST` | `/playlists/` | `PlaylistCreate` | `PlaylistRead` | `201` | `404, 422` |
 | List playlists | `GET` | `/playlists/` | - | `list[PlaylistRead]` | `200` | - |
 | Get playlist by id | `GET` | `/playlists/{playlist_id}` | - | `PlaylistRead` | `200` | `404` |
 | Update playlist | `PATCH` | `/playlists/{playlist_id}` | `PlaylistUpdate` | `PlaylistRead` | `200` | `404`, `422` |
@@ -39,4 +39,4 @@ This document defines the complete CRUD route map before implementing the missin
 | Operation | Method | Path | Success Status | Error Status |
 | --- | --- | --- | --- | --- |
 | Add song to playlist | `POST` | `/playlists/{playlist_id}/songs/{song_id}` | `200` | `404` |
-| Remove song from playlist | `DELETE` | `/playlists/{playlist_id}/songs/{song_id}` | `200` | `404` |
+| Remove song from playlist | `DELETE` | `/playlists/{playlist_id}/songs/{song_id}` | `200` (returns updated `PlaylistRead`) | `404` |

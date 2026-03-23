@@ -1,6 +1,6 @@
-# Stage 4 - Terraform Integration With Existing Flow (Phase 5, Step 4)
+# Terraform Integration Flow
 
-This step integrates Terraform as a natural extension of the current Stage 4 delivery model.
+Integrates Terraform as a prerequisite step in the full delivery sequence.
 
 ## Integrated delivery sequence
 
@@ -14,17 +14,6 @@ This step integrates Terraform as a natural extension of the current Stage 4 del
    - Confirm pods, routes, and policies are healthy.
 
 This keeps each layer focused and ordered by dependency.
-
-## Responsibility alignment
-
-- Terraform:
-  - Environment baseline and prerequisites.
-- Helm:
-  - App release packaging and rollout.
-- Istio manifests:
-  - Runtime traffic/security behavior for the app.
-- GitHub Actions:
-  - Executes these layers in sequence and reports results.
 
 ## CI/CD fit
 
