@@ -3,8 +3,16 @@ __pycache__/
 *.sqlite3
 *.db
 .venv/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.idea/
+.vscode/
 .env
 .terraform/
 *.tfstate
 *.tfstate.*
 *.tfplan
+.DS_Store
