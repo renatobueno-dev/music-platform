@@ -16,6 +16,9 @@ This distinction guides what is checkpoint-priority versus production-polish.
 
 ## Confirmed Loose Ends
 
+This section captures the baseline audit snapshot before remediation steps were executed.
+Implementation status per step is tracked below in the ordered remediation section.
+
 - `helm/music-platform/values.yaml`
   - API image still defaults to `tag: "latest"`.
   - `api.resources` and `db.resources` are empty.
@@ -114,6 +117,10 @@ Goal:
   - explicit DB runtime configuration policy.
 
 ## Step 4 - Pipeline Reproducibility
+
+Status:
+
+- Implemented.
 
 Why fourth:
 
