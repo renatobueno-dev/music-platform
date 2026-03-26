@@ -153,6 +153,10 @@ Goal:
 
 ## Step 6 - Istio Resilience Polish (DestinationRule)
 
+Status:
+
+- Implemented.
+
 Why last:
 
 - Important hardening, but not the first blocker for Stage 4 delivery requirements.
