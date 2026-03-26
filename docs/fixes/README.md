@@ -11,3 +11,4 @@ It is intentionally separated from the original stage documentation and does not
 - `security-defaults-hardening.md`: Step 2 implementation details for Helm default image/secret hardening.
 - `runtime-hardening-baseline.md`: Step 3 implementation details for Docker runtime and Helm resource hardening.
 - `pipeline-reproducibility-hardening.md`: Step 4 implementation details for CI reproducibility and dependency/image pinning.
+- `terraform-kubernetes-posture-hardening.md`: Step 5 implementation details for Terraform baseline posture and namespace security labels.
