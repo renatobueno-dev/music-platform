@@ -97,6 +97,10 @@ Goal:
 
 ## Step 3 - Runtime Hardening Baseline
 
+Status:
+
+- Implemented.
+
 Why third:
 
 - After configuration consistency and secure defaults, hardening the runtime closes obvious operational gaps.
