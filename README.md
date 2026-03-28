@@ -83,7 +83,7 @@ This repository is for study. Before using in production:
    ```bash
    uvicorn app.main:app --reload
    ```
-   To use PostgreSQL instead, set `DATABASE_URL` before starting (see [SETUP_AND_QUALITY.md](docs/SETUP_AND_QUALITY.md)).
+   To use PostgreSQL instead, set `DATABASE_URL` before starting (see [SETUP.md](docs/SETUP.md)).
 
 - Swagger UI: `http://127.0.0.1:8000/docs`
 - ReDoc: `http://127.0.0.1:8000/redoc`
@@ -123,13 +123,13 @@ Full reference in [`docs/`](./docs/README.md):
 
 | Topic | Files |
 | --- | --- |
-| Project-wide | [CHANGELOG.md](./CHANGELOG.md) · [ARCHITECTURE.md](./docs/ARCHITECTURE.md) · [SETUP_AND_QUALITY.md](./docs/SETUP_AND_QUALITY.md) · [DEVELOPMENT_LOG.md](./docs/DEVELOPMENT_LOG.md) |
+| Project-wide | [CHANGELOG.md](./CHANGELOG.md) · [ARCHITECTURE.md](./docs/ARCHITECTURE.md) · [SETUP.md](./docs/SETUP.md) · [QUALITY.md](./docs/QUALITY.md) · [DEVELOPMENT_LOG.md](./docs/DEVELOPMENT_LOG.md) |
 | Domain | [domain-scope](./docs/domain/domain-scope.md) · [crud-endpoint-plan](./docs/domain/crud-endpoint-plan.md) |
 | Containers | [docker-guide](./docs/containers/docker-guide.md) |
 | Kubernetes | [k8s-concept-map](./docs/kubernetes/k8s-concept-map.md) · [helm-guide](./docs/kubernetes/helm-guide.md) |
 | Istio | [readiness](./docs/istio/readiness.md) · [traffic](./docs/istio/traffic.md) · [security](./docs/istio/security.md) |
 | CI/CD | [github-actions](./docs/cicd/github-actions.md) |
-| Terraform | [scope](./docs/terraform/scope.md) · [helm-boundary](./docs/terraform/helm-boundary.md) · [min-scope](./docs/terraform/min-scope.md) · [flow-integration](./docs/terraform/flow-integration.md) |
+| Terraform | [scope-and-boundary](./docs/terraform/scope-and-boundary.md) · [flow-integration](./docs/terraform/flow-integration.md) |
 
 ---
 

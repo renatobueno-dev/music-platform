@@ -1,55 +1,64 @@
 # Documentation
 
-Topic-based reference for the Music Platform API project.
+> Topic-based reference for the Music Platform API. Each guide covers one area of the stack independently — navigate by topic below.
 
-## Project-wide guides
+## 📋 Project-wide guides
 
 | File | Description |
 | --- | --- |
 | [CHANGELOG.md](../CHANGELOG.md) | Notable changes per version — Added, Changed, Fixed |
-| [ARCHITECTURE.md](./ARCHITECTURE.md) | Data model, layer structure, and cross-cutting design decisions |
-| [SETUP_AND_QUALITY.md](./SETUP_AND_QUALITY.md) | Environment variables, local/Docker/Kubernetes setup, and testing guide |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | Data model, layer structure, and application-level design decisions |
+| [INFRA_DECISIONS.md](./INFRA_DECISIONS.md) | Kubernetes, Istio, Terraform, and CI/CD design decisions |
+| [SETUP.md](./SETUP.md) | Environment variables and local/Docker/Kubernetes setup |
+| [QUALITY.md](./QUALITY.md) | Testing guide and CI overview |
+| [API.md](./API.md) | Stable API endpoint reference with schemas and status codes |
 | [DEVELOPMENT_LOG.md](./DEVELOPMENT_LOG.md) | Development journey — reasoning, decisions, and corrections per stage |
+| [DEVELOPMENT_DIARY.md](./DEVELOPMENT_DIARY.md) | Component-level decisions and reasoning — the why behind each technical choice |
 
-## Domain
+## 🎵 Domain
 
 | File | Description |
 | --- | --- |
 | [domain-scope.md](./domain/domain-scope.md) | Domain model fields and relationship decisions for `Song` and `Playlist` |
-| [crud-endpoint-plan.md](./domain/crud-endpoint-plan.md) | Full CRUD route map with methods, schemas, and status codes |
+| [crud-endpoint-plan.md](./domain/crud-endpoint-plan.md) | CRUD route planning artifact — methods, schemas, status codes, and implementation order |
 
-## Containers
+## 🐳 Containers
 
 | File | Description |
 | --- | --- |
-| [docker-guide.md](./containers/docker-guide.md) | Docker/Compose steps A–E with validation and troubleshooting checks |
+| [docker-guide.md](./containers/docker-guide.md) | Docker image build and validation — Steps A–C |
+| [compose-guide.md](./containers/compose-guide.md) | Docker Compose multi-service stack — Steps D–E |
 
-## Kubernetes
+## ☸️ Kubernetes
 
 | File | Description |
 | --- | --- |
 | [k8s-concept-map.md](./kubernetes/k8s-concept-map.md) | Docker/Compose → Kubernetes resource concept translation |
 | [helm-guide.md](./kubernetes/helm-guide.md) | Helm chart structure, values, and install/lint commands |
 
-## Istio
+## 🕸️ Istio
 
 | File | Description |
 | --- | --- |
 | [readiness.md](./istio/readiness.md) | Istio readiness checklist and pre-install validation |
-| [traffic.md](./istio/traffic.md) | Gateway and VirtualService traffic entry routing |
+| [traffic.md](./istio/traffic.md) | Gateway, VirtualService, and DestinationRule resilience configuration |
 | [security.md](./istio/security.md) | mTLS PeerAuthentication and AuthorizationPolicy rules |
 
-## CI/CD
+## 🔄 CI/CD
 
 | File | Description |
 | --- | --- |
 | [github-actions.md](./cicd/github-actions.md) | GitHub Actions workflow: triggers, build/push, and deploy steps |
 
-## Terraform
+## 🏗️ Terraform
 
 | File | Description |
 | --- | --- |
-| [scope.md](./terraform/scope.md) | Terraform ownership boundary and responsibility definition |
-| [helm-boundary.md](./terraform/helm-boundary.md) | Separation contract between Terraform and Helm concerns |
-| [min-scope.md](./terraform/min-scope.md) | Minimum valid Terraform scope for this project |
+| [scope-and-boundary.md](./terraform/scope-and-boundary.md) | Terraform ownership boundary, Helm separation matrix, and minimum locked scope |
 | [flow-integration.md](./terraform/flow-integration.md) | Integrating Terraform into the full Helm/Istio/CI pipeline |
+
+## 🔧 Post-checkpoint fixes
+
+| File | Description |
+| --- | --- |
+| [fixes/README.md](./fixes/README.md) | Index and overview of all post-checkpoint remediation work |

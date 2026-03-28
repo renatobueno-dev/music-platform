@@ -183,9 +183,7 @@ The main risk of Terraform in a project that already uses Helm is **dual ownersh
 The decision was simple and conservative: Terraform manages only the namespace and platform labels (specifically `istio-injection=enabled`). Everything managed by Helm stays exclusively in Helm.
 
 The guides in [`docs/terraform/`](./terraform/) document this decision in four layers:
-- [`scope.md`](./terraform/scope.md): initial ownership boundary
-- [`helm-boundary.md`](./terraform/helm-boundary.md): Terraform × Helm × GitHub Actions ownership matrix
-- [`min-scope.md`](./terraform/min-scope.md): minimum scope locked for delivery
+- [`scope-and-boundary.md`](./terraform/scope-and-boundary.md): ownership boundary, matrix and minimum locked scope
 - [`flow-integration.md`](./terraform/flow-integration.md): Terraform's position in the delivery sequence
 
 ---

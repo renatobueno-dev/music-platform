@@ -175,7 +175,7 @@ The Kubernetes `Service` handles pod discovery only — no HTTP awareness. The I
 
 The primary risk of Terraform alongside Helm is dual ownership: if both manage the same Kubernetes object, `apply` runs conflict. The chosen scope is minimal and safe: Terraform owns the namespace and the `istio-injection=enabled` label only. All workloads stay exclusively in Helm.
 
-The full ownership matrix and anti-conflict rules are in [`docs/terraform/helm-boundary.md`](./terraform/helm-boundary.md). Minimum locked scope in [`docs/terraform/min-scope.md`](./terraform/min-scope.md).
+The full ownership matrix and anti-conflict rules are in [`docs/terraform/scope-and-boundary.md`](./terraform/scope-and-boundary.md).
 
 ---
 

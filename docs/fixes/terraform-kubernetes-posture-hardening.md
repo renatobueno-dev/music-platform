@@ -1,6 +1,10 @@
 # Step 5 Fix: Terraform and Kubernetes Posture Hardening
 
-## Problem
+> Tightens Terraform provider constraint, adds namespace Pod Security baseline labels, and makes backend and lock behavior explicit.
+
+---
+
+## 🐛 Problem
 
 Terraform baseline posture was still minimal:
 
@@ -8,11 +12,11 @@ Terraform baseline posture was still minimal:
 - namespace baseline labels only guaranteed `istio-injection=enabled`;
 - backend and lock behavior were not explicit in code/workflow.
 
-## Goal
+## 🎯 Goal
 
 Make Terraform look like intentional infrastructure code, not a minimal add-on.
 
-## Implementation
+## 🔧 Implementation
 
 ### 1) Provider policy tightening
 
@@ -73,7 +77,7 @@ Reason:
 - Backend behavior is explicit in Terraform code.
 - Lock behavior is explicit in deploy commands.
 
-## Validation
+## ✅ Validation
 
 Commands:
 
@@ -88,4 +92,12 @@ Checks:
 - Terraform formatting is clean.
 - Configuration validates in CI-style mode (`-backend=false`).
 - Namespace label set includes Pod Security baseline keys in plan/validation.
+
+---
+
+## 🔗 Related documents
+
+- [Loose ends roadmap](./loose-ends-priority-roadmap.md)
+- [Terraform scope and boundary](../terraform/scope-and-boundary.md)
+- [Pipeline reproducibility](./pipeline-reproducibility-hardening.md)
 
