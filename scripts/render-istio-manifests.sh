@@ -5,6 +5,7 @@ NAMESPACE="${NAMESPACE:-music-platform}"
 RELEASE_NAME="${RELEASE_NAME:-music-platform}"
 CHART_NAME="${CHART_NAME:-music-platform}"
 ISTIO_HOST="${ISTIO_HOST:-playcatch.local}"
+ISTIO_TLS_SECRET="${ISTIO_TLS_SECRET:-playcatch-tls}"
 CLUSTER_DOMAIN="${CLUSTER_DOMAIN:-cluster.local}"
 
 if [[ "${RELEASE_NAME}" == *"${CHART_NAME}"* ]]; then
@@ -23,25 +24,37 @@ escape_sed_replacement() {
 
 render_template() {
   local template_file="$1"
+  local rendered_output
   local escaped_namespace
   local escaped_istio_host
   local escaped_api_service_host
   local escaped_cluster_domain
   local escaped_api_service_account
+  local escaped_istio_tls_secret
 
   escaped_namespace="$(escape_sed_replacement "${NAMESPACE}")"
   escaped_istio_host="$(escape_sed_replacement "${ISTIO_HOST}")"
+  escaped_istio_tls_secret="$(escape_sed_replacement "${ISTIO_TLS_SECRET}")"
   escaped_api_service_host="$(escape_sed_replacement "${API_SERVICE_HOST}")"
   escaped_cluster_domain="$(escape_sed_replacement "${CLUSTER_DOMAIN}")"
   escaped_api_service_account="$(escape_sed_replacement "${API_SERVICE_ACCOUNT}")"
 
-  sed \
+  rendered_output="$(sed \
     -e "s|__NAMESPACE__|${escaped_namespace}|g" \
     -e "s|__ISTIO_HOST__|${escaped_istio_host}|g" \
+    -e "s|__ISTIO_TLS_SECRET__|${escaped_istio_tls_secret}|g" \
     -e "s|__API_SERVICE_HOST__|${escaped_api_service_host}|g" \
     -e "s|__CLUSTER_DOMAIN__|${escaped_cluster_domain}|g" \
     -e "s|__API_SERVICE_ACCOUNT__|${escaped_api_service_account}|g" \
-    "${template_file}"
+    "${template_file}")"
+
+  if printf '%s\n' "${rendered_output}" | grep -Eq '__[A-Z0-9_]+__'; then
+    echo "Unresolved placeholders found in ${template_file}:" >&2
+    printf '%s\n' "${rendered_output}" | grep -Eo '__[A-Z0-9_]+__' | sort -u >&2
+    return 1
+  fi
+
+  printf '%s\n' "${rendered_output}"
 }
 
 render_template "k8s/istio/traffic-management.yaml"

@@ -22,6 +22,9 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+      volumes:
+        - name: tmp
+          emptyDir: {}
       containers:
         - name: api
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
@@ -37,6 +40,9 @@ spec:
             - name: http
               containerPort: {{ .Values.api.containerPort }}
               protocol: TCP
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
           env:
             - name: DATABASE_URL
               valueFrom:

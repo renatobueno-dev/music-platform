@@ -1,13 +1,9 @@
 from datetime import date, datetime
-from typing import TYPE_CHECKING
 
 from sqlalchemy import Date, DateTime, Integer, String, func
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base
-
-if TYPE_CHECKING:
-    from app.models.playlist import Playlist
 
 
 class Song(Base):
@@ -25,9 +21,4 @@ class Song(Base):
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
-    )
-
-    playlists: Mapped[list["Playlist"]] = relationship(
-        secondary="playlist_songs",
-        back_populates="songs",
     )

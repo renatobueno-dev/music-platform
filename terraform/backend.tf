@@ -1,6 +1,6 @@
 terraform {
   backend "kubernetes" {
-    namespace     = "default"
+    namespace     = "kube-system"
     secret_suffix = "music-platform"
   }
 }

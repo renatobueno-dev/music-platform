@@ -31,5 +31,4 @@ class Playlist(Base):
 
     songs: Mapped[list["Song"]] = relationship(
         secondary="playlist_songs",
-        back_populates="playlists",
     )

@@ -11,6 +11,17 @@ spec:
         number: 80
         name: http
         protocol: HTTP
+      tls:
+        httpsRedirect: true
+      hosts:
+        - __ISTIO_HOST__
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: __ISTIO_TLS_SECRET__
       hosts:
         - __ISTIO_HOST__
 ---

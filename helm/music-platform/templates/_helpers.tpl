@@ -51,6 +51,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-api" (include "music-platform.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "music-platform.apiServiceName" -}}
+{{- include "music-platform.apiName" . -}}
+{{- end -}}
+
 {{- define "music-platform.dbName" -}}
 {{- printf "%s-db" (include "music-platform.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

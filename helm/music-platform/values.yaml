@@ -20,7 +20,7 @@ api:
       memory: 512Mi
   probes:
     startup:
-      initialDelaySeconds: 0
+      initialDelaySeconds: 5
       periodSeconds: 2
       timeoutSeconds: 2
       failureThreshold: 30
@@ -44,12 +44,12 @@ db:
     port: 5432
   name: music_platform
   user: postgres
-  password: ""
+  password: null
   existingSecret: ""
   persistence:
     enabled: true
     size: 1Gi
-    storageClass: ""
+    storageClass: "standard"
   resources:
     requests:
       cpu: 100m

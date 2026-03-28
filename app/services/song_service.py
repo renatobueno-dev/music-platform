@@ -1,13 +1,19 @@
+import logging
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.song import Song
 from app.schemas.song import SongCreate, SongUpdate
 
+logger = logging.getLogger(__name__)
+
 
 def list_songs(session: Session) -> list[Song]:
     statement = select(Song).order_by(Song.id)
-    return list(session.scalars(statement).all())
+    songs = session.scalars(statement).all()
+    logger.debug("Listed %s songs.", len(songs))
+    return songs
 
 
 def create_song(session: Session, payload: SongCreate) -> Song:
@@ -15,6 +21,7 @@ def create_song(session: Session, payload: SongCreate) -> Song:
     session.add(song)
     session.commit()
     session.refresh(song)
+    logger.info("Created song id=%s.", song.id)
     return song
 
 
@@ -29,9 +36,12 @@ def update_song(session: Session, song: Song, payload: SongUpdate) -> Song:
 
     session.commit()
     session.refresh(song)
+    logger.info("Updated song id=%s with fields=%s.", song.id, sorted(updates))
     return song
 
 
 def delete_song(session: Session, song: Song) -> None:
+    song_id = song.id
     session.delete(song)
     session.commit()
+    logger.info("Deleted song id=%s.", song_id)
