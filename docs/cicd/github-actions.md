@@ -23,7 +23,7 @@ Automates validation, build/push, and deployment into a reproducible CI/CD workf
 
 Validation job:
 
-- Checkout repository with `actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd` (pinned commit).
+- Checkout repository with `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd` (pinned commit).
 - Install Python dependencies.
 - Compile Python modules (`python -m compileall app`).
 - Build Docker image (validation build).

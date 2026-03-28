@@ -6,7 +6,7 @@
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Helm-326CE5?logo=kubernetes&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?logo=terraform&logoColor=white)
-![CI](https://github.com/renatobueno-dev/playlist_api/actions/workflows/deploy.yml/badge.svg)
+![CI](https://github.com/renatobueno-dev/music-platform/actions/workflows/deploy.yml/badge.svg)
 ![Istio](https://img.shields.io/badge/Istio-service_mesh-466BB0?logo=istio&logoColor=white)
 
 ## 📚 Purpose

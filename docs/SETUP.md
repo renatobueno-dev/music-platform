@@ -74,6 +74,8 @@ DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/music_platfor
    uvicorn app.main:app --reload
    ```
 
+> **Optional tuning:** `STARTUP_DB_MAX_RETRIES` and `STARTUP_DB_RETRY_SECONDS` control how long the app retries the database connection on startup. See the [startup tuning variables](#startup-tuning-variables) table above for defaults.
+
 - Swagger UI: `http://127.0.0.1:8000/docs`
 - ReDoc: `http://127.0.0.1:8000/redoc`
 - Health: `http://127.0.0.1:8000/health`

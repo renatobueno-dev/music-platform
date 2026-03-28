@@ -1,6 +1,6 @@
 # API Reference — Music Platform
 
-> Stable endpoint reference. For endpoint planning and implementation decisions, see [crud-endpoint-plan.md](./domain/crud-endpoint-plan.md).
+> API version: **1.6.0** · Stable endpoint reference. For endpoint planning and implementation decisions, see [crud-endpoint-plan.md](./domain/crud-endpoint-plan.md).
 
 ---
 

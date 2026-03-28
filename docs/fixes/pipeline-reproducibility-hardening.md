@@ -44,10 +44,10 @@ File:
 Changes:
 
 - Pinned actions to commit SHAs:
-  - `actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd`
-  - `docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f`
-  - `docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9`
-  - `docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8`
+  - `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd`
+  - `docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd`
+  - `docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2`
+  - `docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294`
 
 Reason:
 

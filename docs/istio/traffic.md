@@ -32,7 +32,7 @@ In-cluster request path:
 
 Manifest file: `k8s/istio/traffic-management.yaml`
 
-> ⚠️ This manifest uses `__NAMESPACE__`, `__ISTIO_HOST__`, and `__API_SERVICE_HOST__` placeholders — it is never applied directly. Use `scripts/render-istio-manifests.sh` to interpolate environment values before applying. In CI/CD the workflow step `Apply Istio traffic and security policies` runs this automatically. For local apply: `./scripts/render-istio-manifests.sh | kubectl apply -n music-platform -f -`
+> ⚠️ This manifest uses `__NAMESPACE__`, `__ISTIO_HOST__`, and `__API_SERVICE_HOST__` placeholders — it is never applied directly. Use `scripts/render-istio-manifests.sh` to interpolate environment values before applying. In CI/CD the workflow step `Apply Istio traffic and security policies` runs this automatically. For local apply: `./scripts/render-istio-manifests.sh | kubectl apply -n "${NAMESPACE}" -f -`
 
 Resources applied:
 
