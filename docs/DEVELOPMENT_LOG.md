@@ -2,35 +2,7 @@
 
 This document describes **the reasoning and decisions made throughout the process**, following an **incremental, step-by-step approach**, explaining **what was done and why**, including **adjustments, uncertainties, and errors corrected along the way**.
 
-> For consolidated technical reference by topic, see the guides in [`docs/`](./README.md). For API setup and usage, see the [main README](../README.md).
-
----
-
-## 🤖 How AI was used in this project
-
-Most of the code and architecture decisions were produced with AI assistance.
-
-My active role throughout the process was:
-- reading and understanding each generated part,
-- questioning decisions that were not clear,
-- redirecting when the output did not reflect the original intent,
-- and consciously choosing what to keep, adapt, or discard.
-
-The deliberate focus of this checkpoint was **deployment architecture** — understanding how a simple API progresses through infrastructure stages: from running locally to a full pipeline with Kubernetes, Istio, Terraform, and CI/CD.
-
-### AI workflow
-
-Five conversations with distinct responsibilities:
-
-| Conversation | Model | Role |
-|---|---|---|
-| 1 | GPT-5.4 | API challenge guidance |
-| 2 | GPT-5.3-Codex | Coding |
-| 3 | GPT-5.4 | Code explanation and study |
-| 4 | Claude Sonnet 4.6 | Review, design decisions, and documentation |
-| 5 | Claude Opus 4.6 | Audit — looking for loose ends |
-
-**How I worked:** Read all guidance first, then asked Codex to execute each step. Even after understanding what was done, I sent the output to a separate GPT conversation for explanation. Followed that logic end to end through the full challenge. When the challenge was complete, switched to Sonnet for documentation only and Opus for auditing only. Any new guidance or coding goes back to the GPT workflow to keep consistency and sources of truth.
+> For consolidated technical reference by topic, see the guides in [`docs/`](./README.md). For API setup and usage, see the [main README](../README.md). For personal process notes and AI workflow, see [DEVELOPMENT_DIARY.md](./DEVELOPMENT_DIARY.md).
 
 ---
 
@@ -259,7 +231,7 @@ The lesson: incremental edits accumulate inconsistencies over time. Periodic cro
 
 Real problems that surfaced and were fixed:
 
-- **Terraform binary collision in CI** — the `terraform/` directory at the project root conflicted with the Terraform binary name during workflow installation. The install script tried to unzip the binary directly into the workspace, causing a name collision (`error: cannot delete old terraform / Is a directory`). Fixed by extracting the zip into a temporary directory and moving the binary to `/usr/local/bin`.
+- **Terraform binary collision in CI** — the `terraform/` directory collided with the binary name during CI installation. Full write-up in [`docs/cicd/github-actions.md`](./cicd/github-actions.md).
 - **`serviceaccounts.yaml` missing from helm-guide.md** — the template was created during the Istio security phase but the Helm guide was not updated. Caught in the redundancy audit; corrected.
 - **Documentation with inconsistent stage-based naming** — the original guides used `STAGE_X_` prefixes reflecting creation order. Reorganised to reflect topic instead.
 - **Four Terraform files repeating the same scope** — the step-by-step progression generated repetition. Redundancy identified and removed with explicit references to `min-scope.md` as the single source of truth.

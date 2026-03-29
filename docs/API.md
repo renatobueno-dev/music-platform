@@ -45,7 +45,7 @@ When running locally: `http://localhost:8000`
 
 ## 🔗 Playlist–Song relationships
 
-`POST` returns the full updated `PlaylistRead` object — the complete `songs` list reflects the state after the operation. `DELETE` returns no body.
+`POST` returns the full updated `PlaylistRead` object — the complete `songs` list reflects the state after the operation. `DELETE` returns no body. The `DELETE` is idempotent for the link: if both IDs exist but the song is already removed from the playlist, the response is still `204`. `404` is returned only when the `playlist_id` or `song_id` resource does not exist.
 
 | Operation | Method | Path | Response Schema | Success | Error |
 | --- | --- | --- | --- | --- | --- |

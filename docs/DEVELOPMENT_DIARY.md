@@ -2,7 +2,35 @@
 
 This document describes **the reasoning and decisions made at the component level throughout the process**, focusing on the **why behind each technical choice** at the layer/component level.
 
-> This is a companion to [DEVELOPMENT_LOG.md](./DEVELOPMENT_LOG.md), which contains the stage-indexed narrative, AI workflow, and initial understanding of the challenge. For consolidated technical reference by topic, see the guides in [`docs/`](./README.md).
+> This is a companion to [DEVELOPMENT_LOG.md](./DEVELOPMENT_LOG.md), which contains the stage-indexed narrative and initial understanding of the challenge. For consolidated technical reference by topic, see the guides in [`docs/`](./README.md).
+
+---
+
+## 🤖 How AI was used in this project
+
+Most of the code and architecture decisions were produced with AI assistance.
+
+My active role throughout the process was:
+- reading and understanding each generated part,
+- questioning decisions that were not clear,
+- redirecting when the output did not reflect the original intent,
+- and consciously choosing what to keep, adapt, or discard.
+
+The deliberate focus of this checkpoint was **deployment architecture** — understanding how a simple API progresses through infrastructure stages: from running locally to a full pipeline with Kubernetes, Istio, Terraform, and CI/CD.
+
+### AI workflow
+
+Five conversations with distinct responsibilities:
+
+| Conversation | Model | Role |
+|---|---|---|
+| 1 | GPT-5.4 | API challenge guidance |
+| 2 | GPT-5.3-Codex | Coding |
+| 3 | GPT-5.4 | Code explanation and study |
+| 4 | Claude Sonnet 4.6 | Review, design decisions, and documentation |
+| 5 | Claude Opus 4.6 | Audit — looking for loose ends |
+
+**How I worked:** Read all guidance first, then asked Codex to execute each step. Even after understanding what was done, I sent the output to a separate GPT conversation for explanation. Followed that logic end to end through the full challenge. When the challenge was complete, switched to Sonnet for documentation only and Opus for auditing only. Any new guidance or coding goes back to the GPT workflow to keep consistency and sources of truth.
 
 ---
 
@@ -233,7 +261,6 @@ Periodic cross-file audits catch what in-context editing misses. The cost of ski
 
 Problems that surfaced during the process and required explicit fixes:
 
-- **Terraform binary collision in CI** — `terraform/` directory collided with the binary extraction path. Fixed by extracting into a temp directory and moving the binary to `/usr/local/bin`.
 - **`serviceaccounts.yaml` missing from `helm-guide.md`** — the template was created during the Istio security phase and the Helm guide was not updated. Caught in redundancy audit and corrected.
 - **Stage-based doc naming** — the `STAGE_X_` prefix system made reference navigation harder once the project was complete. Reorganised to topic-based structure.
 - **Duplicate Terraform scope content** — four files created incrementally produced three sections repeating the same scope boundary. Consolidated with references to `min-scope.md` as the single source of truth. Later merged from four files into two (`scope-and-boundary.md` and `flow-integration.md`).

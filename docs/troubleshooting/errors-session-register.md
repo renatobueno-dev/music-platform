@@ -1,4 +1,4 @@
-# Playlist API Error Register (Session Scope)
+# Session Error Register — Music Platform API
 
 This document records only errors that were actually reported or observed during the full project execution flow in this session.
 
@@ -64,14 +64,14 @@ This document records only errors that were actually reported or observed during
 
 | Error # | Error (short) | Where it happened | Stage/Step |
 | --- | --- | --- | --- |
-| 1 | `Build Push And Deploy` exit code 1 | GitHub Actions deploy run | Etapa 4 / Phase 4 |
-| 2 | Missing `KUBE_CONFIG_DATA` | Workflow deploy precheck/secrets | Etapa 4 / Phase 4 |
-| 3 | Invalid workflow file | `deploy.yml` parse | Etapa 4 / Phase 4 |
-| 4 | `Unrecognized named-value: 'secrets'` (line 51) | Workflow expression context | Etapa 4 / Phase 4 |
-| 5 | `Unrecognized named-value: 'secrets'` (line 125) | Workflow expression context | Etapa 4 / Phase 4 |
-| 6 | Validate job exit code 128 | CI validation run failure | Etapa 4 / Phase 4 |
-| 7 | Validate job exit code 50 | CI validation run failure | Etapa 4 / Phase 4 |
-| 8 | `cannot delete old terraform` / `Is a directory` | Terraform install step in workflow | Etapa 4 / Phase 4 |
+| 1 | `Build Push And Deploy` exit code 1 | GitHub Actions deploy run | Stage 4, Phase 5 |
+| 2 | Missing `KUBE_CONFIG_DATA` | Workflow deploy precheck/secrets | Stage 4, Phase 5 |
+| 3 | Invalid workflow file | `deploy.yml` parse | Stage 4, Phase 5 |
+| 4 | `Unrecognized named-value: 'secrets'` (line 51) | Workflow expression context | Stage 4, Phase 5 |
+| 5 | `Unrecognized named-value: 'secrets'` (line 125) | Workflow expression context | Stage 4, Phase 5 |
+| 6 | Validate job exit code 128 | CI validation run failure | Stage 4, Phase 5 |
+| 7 | Validate job exit code 50 | CI validation run failure | Stage 4, Phase 5 |
+| 8 | `cannot delete old terraform` / `Is a directory` | Terraform install step in workflow | Stage 4, Phase 5 |
 
 ### Checkpoint code issue
 

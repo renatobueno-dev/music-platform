@@ -62,3 +62,9 @@
 | File | Description |
 | --- | --- |
 | [fixes/README.md](./fixes/README.md) | Index and overview of all post-checkpoint remediation work |
+
+## 🔍 Troubleshooting
+
+| File | Description |
+| --- | --- |
+| [troubleshooting/errors-session-register.md](./troubleshooting/errors-session-register.md) | Session-scoped error register — observed CI, Terraform, and local tooling errors with root-cause groups |

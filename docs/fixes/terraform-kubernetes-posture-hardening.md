@@ -42,7 +42,7 @@ Files:
 Changes:
 
 - Added variables:
-  - `pod_security_level` (default `baseline`)
+  - `pod_security_level` (default `restricted`)
   - `pod_security_version` (default `latest`)
 - Extended required namespace labels to include:
   - `pod-security.kubernetes.io/enforce`
@@ -66,8 +66,8 @@ Files:
 
 Changes:
 
-- Added explicit local backend declaration:
-  - `backend "local" { path = "terraform.tfstate" }`
+- Added explicit backend declaration:
+  - `backend "kubernetes" { namespace = "kube-system"; secret_suffix = "music-platform" }`
 - Added workflow env var:
   - `TERRAFORM_LOCK_TIMEOUT: 120s`
 - Added `-lock-timeout` to Terraform `import` and `apply` steps.
