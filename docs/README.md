@@ -14,8 +14,8 @@
 | [API.md](./API.md) | Stable API endpoint reference with schemas and status codes |
 | [DEVELOPMENT_LOG.md](./DEVELOPMENT_LOG.md) | Development journey — reasoning, decisions, and corrections per stage |
 | [DEVELOPMENT_DIARY.md](./DEVELOPMENT_DIARY.md) | Component-level decisions and reasoning — the why behind each technical choice |
-| [DEVELOPMENT_LOG_RESTART.md](./DEVELOPMENT_LOG_RESTART.md) | Historical log of the unpushed commit execution window before guidance restart |
-| [DEVELOPMENT_DIARY_RESTART.md](./DEVELOPMENT_DIARY_RESTART.md) | Restart rationale, execution reset context, and guardrails for the next cycle |
+| [DEVELOPMENT_LOG_RESTART.md](./archive/DEVELOPMENT_LOG_RESTART.md) | Historical log of the unpushed commit execution window before guidance restart |
+| [DEVELOPMENT_DIARY_RESTART.md](./archive/DEVELOPMENT_DIARY_RESTART.md) | Restart rationale, execution reset context, and guardrails for the next cycle |
 
 ## 🎵 Domain
 
@@ -69,4 +69,4 @@
 
 | File | Description |
 | --- | --- |
-| [troubleshooting/errors-session-register.md](./troubleshooting/errors-session-register.md) | Session-scoped error register — observed CI, Terraform, and local tooling errors with root-cause groups |
+| [troubleshooting/errors-session-register.md](./archive/troubleshooting/errors-session-register.md) | Session-scoped error register — observed CI, Terraform, and local tooling errors with root-cause groups |
