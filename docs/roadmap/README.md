@@ -36,3 +36,5 @@ Each step file should keep a durable structure:
 - `phase-2/step-14-clean-db-upgrade-validation.md`
 - `phase-2/step-15-reduce-create-all-responsibility.md`
 - `phase-2/step-16-document-migration-workflow.md`
+- `phase-3/step-17-secret-ownership-boundary.md`
+- `phase-3/step-18-secret-flow-alignment.md`

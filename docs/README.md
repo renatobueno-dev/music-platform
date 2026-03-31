@@ -10,6 +10,7 @@
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Data model, layer structure, and application-level design decisions |
 | [INFRA_DECISIONS.md](./INFRA_DECISIONS.md) | Kubernetes, Istio, Terraform, and CI/CD design decisions |
 | [SETUP.md](./SETUP.md) | Environment variables and local/Docker/Kubernetes setup |
+| [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md) | Secret ownership boundary: origin, injection, rotation, and allowed definers by environment |
 | [MIGRATIONS.md](./MIGRATIONS.md) | Migration lifecycle source of truth: ownership, baseline, and environment workflow differences |
 | [QUALITY.md](./QUALITY.md) | Testing guide and CI overview |
 | [API.md](./API.md) | Stable API endpoint reference with schemas and status codes |
@@ -81,6 +82,8 @@
 | [step-14-clean-db-upgrade-validation.md](./roadmap/phase-2/step-14-clean-db-upgrade-validation.md) | Phase 2 Step 14 proof that a clean database can be rebuilt through migration upgrade flow |
 | [step-15-reduce-create-all-responsibility.md](./roadmap/phase-2/step-15-reduce-create-all-responsibility.md) | Phase 2 Step 15 removal of startup `create_all` authority in favor of migration-first schema evolution |
 | [step-16-document-migration-workflow.md](./roadmap/phase-2/step-16-document-migration-workflow.md) | Phase 2 Step 16 stable migration workflow documentation and environment-flow clarification |
+| [step-17-secret-ownership-boundary.md](./roadmap/phase-3/step-17-secret-ownership-boundary.md) | Phase 3 Step 17 secret ownership boundary definition across local, cluster, and CI delivery paths |
+| [step-18-secret-flow-alignment.md](./roadmap/phase-3/step-18-secret-flow-alignment.md) | Phase 3 Step 18 deployment-flow alignment across Terraform baseline, CI orchestration, and Helm runtime secret consumption |
 
 ## 🔧 Post-checkpoint fixes
 
