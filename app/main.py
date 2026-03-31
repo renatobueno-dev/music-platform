@@ -4,10 +4,10 @@ import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from sqlalchemy import inspect, text
 from sqlalchemy.exc import OperationalError
 
 from app.database import engine
-from app.models import Base
 from app.routes.health import router as health_router
 from app.routes.playlists import router as playlists_router
 from app.routes.songs import router as songs_router
@@ -15,12 +15,14 @@ from app.routes.songs import router as songs_router
 logger = logging.getLogger(__name__)
 STARTUP_DB_MAX_RETRIES = int(os.getenv("STARTUP_DB_MAX_RETRIES", "20"))
 STARTUP_DB_RETRY_SECONDS = float(os.getenv("STARTUP_DB_RETRY_SECONDS", "2"))
+REQUIRED_TABLES = {"songs", "playlists", "playlist_songs"}
 
 
-def initialize_database() -> None:
+def wait_for_database() -> None:
     for attempt in range(1, STARTUP_DB_MAX_RETRIES + 1):
         try:
-            Base.metadata.create_all(bind=engine)
+            with engine.connect() as connection:
+                connection.execute(text("SELECT 1"))
             if attempt > 1:
                 logger.info("Database became reachable on startup attempt %s.", attempt)
             return
@@ -41,9 +43,22 @@ def initialize_database() -> None:
             time.sleep(STARTUP_DB_RETRY_SECONDS)
 
 
+def validate_required_schema() -> None:
+    inspector = inspect(engine)
+    missing_tables = sorted(
+        table_name for table_name in REQUIRED_TABLES if not inspector.has_table(table_name)
+    )
+    if missing_tables:
+        raise RuntimeError(
+            "Database schema is missing required tables: "
+            f"{missing_tables}. Run migrations with: alembic upgrade head"
+        )
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    initialize_database()
+    wait_for_database()
+    validate_required_schema()
     yield
 
 
