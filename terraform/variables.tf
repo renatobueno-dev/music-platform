@@ -38,7 +38,7 @@ variable "namespace_annotations" {
 variable "pod_security_level" {
   type        = string
   description = "Pod Security Standards level applied to namespace labels."
-  default     = "restricted"
+  default     = "privileged"
 
   validation {
     condition     = contains(["privileged", "baseline", "restricted"], var.pod_security_level)
@@ -72,7 +72,7 @@ variable "resource_quota_hard" {
     persistentvolumeclaims = "5"
     "requests.cpu"         = "2"
     "requests.memory"      = "2Gi"
-    "limits.cpu"           = "4"
+    "limits.cpu"           = "6"
     "limits.memory"        = "4Gi"
   }
 

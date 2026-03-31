@@ -10,6 +10,7 @@ Integrates Terraform as a prerequisite step in the full delivery sequence.
 
 1. Terraform foundation
    - Manage namespace baseline (`music-platform`) and required labels (Istio injection plus Pod Security Standards labels).
+   - Keep the default Pod Security level mesh-compatible (`privileged`) so the current Istio sidecar-injection model is allowed in the managed namespace.
    - Manage namespace guardrails (`ResourceQuota` and `LimitRange`) for platform-level boundaries.
 2. Runtime secret verification
    - Verify external Kubernetes Secret exists in target namespace and exposes required keys for API/DB.

@@ -11,8 +11,9 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY app ./app
 
-RUN useradd --create-home --shell /usr/sbin/nologin app
-USER app
+RUN groupadd --gid 10001 app \
+    && useradd --uid 10001 --gid 10001 --create-home --shell /usr/sbin/nologin app
+USER 10001:10001
 
 EXPOSE 8000
 

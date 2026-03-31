@@ -57,6 +57,7 @@ The minimum Terraform-managed infrastructure in this project is:
 2. Namespace baseline labels:
    - `istio-injection=enabled`
    - Pod Security Standards labels: `pod-security.kubernetes.io/enforce`, `warn`, `audit`, `enforce-version`, `warn-version`, and `audit-version`
+   - Default mesh-compatible level: `privileged` for the current sidecar-injection path
 3. Baseline namespace guardrails (enabled by default):
    - `ResourceQuota` (`<namespace>-baseline-quota`)
    - `LimitRange` (`<namespace>-baseline-limits`)

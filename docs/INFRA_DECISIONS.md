@@ -48,7 +48,7 @@ Manifests in `k8s/istio/` use `__NAMESPACE__`, `__ISTIO_HOST__`, `__ISTIO_TLS_SE
 
 ### Conservative dual-ownership scope
 
-The primary risk of Terraform alongside Helm is dual ownership: if both manage the same Kubernetes object, `apply` runs conflict. The chosen scope is minimal and safe: Terraform owns the namespace plus the required baseline labels, including `istio-injection=enabled` and the Pod Security Standards `enforce`, `warn`, `audit`, and `*-version` labels. It also owns namespace guardrails (`ResourceQuota` and `LimitRange`) as platform-level policy objects. All workloads stay exclusively in Helm.
+The primary risk of Terraform alongside Helm is dual ownership: if both manage the same Kubernetes object, `apply` runs conflict. The chosen scope is minimal and safe: Terraform owns the namespace plus the required baseline labels, including `istio-injection=enabled` and the Pod Security Standards `enforce`, `warn`, `audit`, and `*-version` labels. The default Pod Security level stays at `privileged` because the current Istio sidecar-injection path uses the `istio-init` container, which requires capabilities blocked by `baseline` and `restricted`. Terraform also owns namespace guardrails (`ResourceQuota` and `LimitRange`) as platform-level policy objects. All workloads stay exclusively in Helm.
 
 The full ownership matrix and anti-conflict rules are in [`docs/terraform/scope-and-boundary.md`](./terraform/scope-and-boundary.md). Minimum locked scope is documented in the same file.
 
@@ -68,6 +68,7 @@ After tests and migrations stabilized the application lifecycle, platform guardr
 
 - baseline `ResourceQuota` to cap namespace resource growth
 - baseline `LimitRange` to enforce default container request/limit boundaries
+- quota defaults sized to accommodate the API/DB workloads together with the current Istio sidecar footprint
 
 This keeps governance in Terraform where it belongs (platform baseline), while application workload definitions remain in Helm.
 
