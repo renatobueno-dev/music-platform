@@ -95,6 +95,7 @@ Schema prerequisite:
 - On a fresh database, schema must be migrated separately before API pods can become reliably healthy.
 - For shared environments, prefer `db.existingSecret` so secret values are externally owned instead of chart-generated.
 - CI deploy flow enforces this shared-environment path by setting `db.existingSecret` to a pre-created secret name.
+- For mesh-enabled environments, the target namespace baseline must already be compatible with Istio sidecar injection and leave enough quota headroom for workload containers plus sidecars.
 
 ```bash
 minikube image load music-platform-api:1.6.1
@@ -112,6 +113,7 @@ This example matches the current chart default in `values.yaml` (`api.image.tag:
   - `helm upgrade --install ... --set api.image.tag=<tag>`
 
 For migration ownership and rollout flow details, see [MIGRATIONS.md](../MIGRATIONS.md).
+For namespace baseline and mesh-readiness prerequisites, see [Terraform integration flow](../terraform/flow-integration.md) and [Istio readiness](../istio/readiness.md).
 
 ---
 

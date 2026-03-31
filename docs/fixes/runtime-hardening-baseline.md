@@ -28,14 +28,22 @@ File:
 Changes:
 
 - Added dedicated non-root runtime user:
-  - `useradd --create-home --shell /usr/sbin/nologin app`
-  - `USER app`
+  - historical Step 3 implementation used:
+    - `useradd --create-home --shell /usr/sbin/nologin app`
+    - `USER app`
 - Added image `HEALTHCHECK` against API health endpoint:
   - checks `http://127.0.0.1:8000/health` with timeout and retries.
 
 Reason:
 
 - Running as non-root and exposing health state are baseline container hardening expectations.
+
+Current baseline note:
+
+- The active image was later tightened to a numeric non-root UID/GID (`10001:10001`) so Kubernetes can verify `runAsNonRoot` without ambiguity.
+- See current source of truth:
+  - `Dockerfile`
+  - `helm/music-platform/templates/api-deployment.yaml`
 
 ### 2) Explicit database configuration requirement
 
@@ -96,4 +104,3 @@ Checks:
 - [Loose ends roadmap](./loose-ends-priority-roadmap.md)
 - [Security defaults hardening](./security-defaults-hardening.md)
 - [Helm guide](../kubernetes/helm-guide.md)
-

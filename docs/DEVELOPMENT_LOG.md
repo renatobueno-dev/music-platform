@@ -152,7 +152,7 @@ The Terraform scope was defined in four separately documented steps — and that
 
 The main risk of Terraform in a project that already uses Helm is **dual ownership**: the same Kubernetes object managed by both at the same time. If Terraform creates the namespace and Helm also tries to manage it, `apply` runs start conflicting.
 
-The decision was simple and conservative: Terraform manages only the namespace and platform labels (specifically `istio-injection=enabled`). Everything managed by Helm stays exclusively in Helm.
+The decision stayed conservative on ownership, but the namespace baseline grew beyond a single label. Terraform now manages the namespace itself, required mesh/platform labels (`istio-injection=enabled` plus Pod Security Standards labels), and namespace guardrails (`ResourceQuota` and `LimitRange`). Everything managed by Helm stays exclusively in Helm.
 
 The guides in [`docs/terraform/`](./terraform/) document this decision in four layers:
 - [`scope-and-boundary.md`](./terraform/scope-and-boundary.md): ownership boundary, matrix and minimum locked scope

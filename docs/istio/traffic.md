@@ -64,6 +64,11 @@ Resources applied:
 
 ## ✅ Quick validation
 
+Prerequisites:
+
+- `playcatch-tls` must exist as a TLS secret in `istio-system` because the `Gateway` terminates HTTPS with `credentialName: playcatch-tls`.
+- The target namespace must already be prepared for Istio sidecar injection and healthy workload rollout.
+
 ```bash
 kubectl get gateway,virtualservice,destinationrule -n music-platform
 kubectl port-forward -n istio-system svc/istio-ingressgateway 18443:443

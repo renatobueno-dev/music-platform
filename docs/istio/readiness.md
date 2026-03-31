@@ -15,6 +15,7 @@ Validate the minimum prerequisites:
 3. Target namespace is prepared for sidecar injection.
 4. Application pods run with Istio sidecars.
 5. Istio custom resources can be applied.
+6. Namespace policy and guardrails are compatible with the injected sidecar footprint.
 
 ## 💻 Commands used
 
@@ -46,6 +47,13 @@ kubectl rollout restart statefulset/music-platform-db -n music-platform
 kubectl get pods -n music-platform -o jsonpath='{range .items[*]}{.metadata.name}{" => "}{range .spec.containers[*]}{.name}{" "}{end}{"\n"}{end}'
 ```
 
+Namespace policy and guardrail compatibility:
+
+```bash
+kubectl get ns music-platform -o jsonpath='{.metadata.labels}'
+kubectl get resourcequota,limitrange -n music-platform
+```
+
 Istio CRD applicability:
 
 ```bash
@@ -74,6 +82,8 @@ Phase 1 is considered complete when all checks pass:
 
 - `istiod` and `istio-ingressgateway` are `Running`.
 - `music-platform` namespace has `istio-injection=enabled`.
+- namespace Pod Security labels are compatible with the current Istio sidecar-injection path.
+- namespace guardrails leave enough headroom for both workload containers and injected sidecars.
 - API and DB pods include `istio-proxy` (`2/2 Running`).
 - Istio networking resources can be created successfully.
 
@@ -81,6 +91,7 @@ Phase 1 is considered complete when all checks pass:
 
 - On this machine, Minikube warns that Istio prefers more resources (8GB RAM and 4 CPUs).
 - Even with that warning, Phase 1 reached healthy status and traffic resources were accepted.
+- For the current project setup, the namespace baseline must remain mesh-compatible. A stricter Pod Security profile or undersized quota can block `istio-init` admission or prevent sidecar-injected pods from being scheduled.
 
 ---
 

@@ -43,7 +43,7 @@ Files:
 Changes:
 
 - Added variables:
-  - `pod_security_level` (default `restricted`)
+  - `pod_security_level` (historical Step 5 default: `restricted`)
   - `pod_security_version` (default `latest`)
 - Extended required namespace labels to include:
   - `pod-security.kubernetes.io/enforce`
@@ -57,6 +57,13 @@ Changes:
 Reason:
 
 - Namespace baseline now reflects both mesh requirements and Pod Security posture.
+
+Current baseline note:
+
+- The active project default was later adjusted to `privileged` because the current Istio sidecar-injection path uses `istio-init`, which requires capabilities blocked by `baseline` and `restricted`.
+- See current source of truth:
+  - `terraform/variables.tf`
+  - `docs/terraform/scope-and-boundary.md`
 
 ### 3) Explicit backend and lock strategy visibility
 

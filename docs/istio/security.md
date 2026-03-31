@@ -64,6 +64,7 @@ Optional checks:
 - Confirm pod identities:
   - `kubectl get pod -n music-platform <pod-name> -o jsonpath='{.spec.serviceAccountName}'`
 - Confirm API still reachable via ingress host:
+  - ensure TLS secret `playcatch-tls` already exists in `istio-system`
   - `kubectl port-forward -n istio-system svc/istio-ingressgateway 18443:443`
   - `curl -k --resolve playcatch.local:18443:127.0.0.1 https://playcatch.local:18443/health`
 
