@@ -1,6 +1,6 @@
 # Static Analysis Guide
 
-> How to use `pylint` and `radon` in this project to complement tests, reduce lint noise, and build a practical cleanup path.
+> How to use `pylint` and `radon` in this project to complement tests, spot code smells, and learn from the codebase quality signals.
 
 ---
 
@@ -9,7 +9,7 @@
 Static analysis is useful here for a different reason than tests:
 
 - tests answer whether the API behaves correctly
-- static analysis helps inspect maintainability, consistency, and code-smell signals
+- static analysis helps us inspect maintainability, consistency, and code-smell signals
 
 This project already treats tests as part of the finished baseline. Static analysis is an additional learning and cleanup layer, not the main proof that the application works.
 
@@ -96,7 +96,45 @@ That means raw `pylint` output should be interpreted in groups:
 
 In this project, the most complex blocks tend to be large contract tests rather than the core application runtime. That is a useful refactoring signal, but it is not the same thing as a production bug.
 
-The shipped `.pylintrc` intentionally suppresses the noisiest framework-specific warnings first so the remaining output is easier to trust.
+The shipped `.pylintrc` intentionally suppresses the noisiest framework-specific warnings first so the remaining output is easier to trust:
+
+- Alembic dynamic member lookups
+- SQLAlchemy `func.now()` false positives
+- low-value docstring noise
+- test bootstrap import-position noise
+
+---
+
+## 🔍 Repo-Specific Learning Points
+
+These are the practical patterns that showed up during the local analysis work:
+
+### Framework-aware linting matters
+
+Running `pylint` with no project-specific tuning can make the report look worse than the runtime reality, especially in:
+
+- `migrations/`
+- SQLAlchemy model files in `app/models/`
+
+That is a good lesson for school projects too: a linter is only helpful when its rules fit the technology stack.
+
+### Large contract tests can become complexity hotspots
+
+The biggest `radon cc` scores came from full CRUD contract tests that validate many steps in one function. Those tests are still valuable, but they are strong candidates for splitting into smaller focused cases such as:
+
+- create/list
+- get by id
+- update
+- delete
+- negative paths
+
+### Maintainability should be interpreted with context
+
+`radon mi` is helpful as a broad health signal, but it should be read together with:
+
+- test coverage
+- readability
+- whether a hotspot is in runtime code or test code
 
 ---
 
@@ -117,26 +155,33 @@ This order keeps effort proportional to value.
 
 ## 🪜 Step-By-Step Cleanup Path
 
-Detailed execution records live in [docs/static-analysis/](./static-analysis/README.md).
+Detailed execution records now live in [docs/static-analysis/](./static-analysis/README.md).
 
-Tracked steps right now:
+Tracked steps:
 
 1. [Step 1 - `pylint` baseline](./static-analysis/step-1-pylint-baseline.md)
-
-Planned next steps will extend that record as the cleanup path continues.
+2. [Step 2 - remaining `pylint` findings](./static-analysis/step-2-remaining-pylint-findings.md)
+3. [Step 3 - `radon` complexity hotspots](./static-analysis/step-3-radon-complexity-hotspots.md)
+4. [Step 4 - docstring policy](./static-analysis/step-4-docstring-policy.md)
+5. [Step 5 - framework-aware suppressions](./static-analysis/step-5-framework-aware-suppressions.md)
+6. [Step 6 - CI enforcement decision](./static-analysis/step-6-ci-enforcement-decision.md)
 
 ---
 
 ## 📊 Current Snapshot
 
-At this stage of the guide:
+At the current stage of this guide:
 
 - Step 1 is complete
-- the repo-level `pylint` baseline is in place
-- static-analysis tools are part of the dev dependency path
-- the lint signal is short enough to serve as a real action list
+- Step 2 is complete
+- Step 3 is complete
+- Step 4 is complete
+- Step 5 is complete
+- Step 6 is complete
+- `radon mi` remains healthy overall
+- the biggest complexity signals are in large contract tests, not in core runtime code
 
-This makes the next cleanup steps practical instead of noisy.
+This makes the current cleanup path practical and contained.
 
 ---
 
@@ -147,6 +192,11 @@ This guide does **not** mean:
 - `pylint` is currently a required CI gate
 - `radon` is part of the deployment workflow
 - static analysis replaces runtime validation
+
+Current decision:
+
+- static analysis remains intentionally local
+- CI enforcement is deferred unless the team later decides the extra gate is worth maintaining
 
 The current project validation baseline remains:
 

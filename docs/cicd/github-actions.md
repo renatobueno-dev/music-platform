@@ -51,6 +51,11 @@ Validation job:
   - `terraform init -backend=false`
   - `terraform validate`
 
+Intentional omission:
+
+- `pylint` and `radon` are not currently part of the validation job.
+- Static analysis remains a local quality tool for this project unless the team later chooses to maintain it as an additional CI gate.
+
 Deploy job:
 
 - Build and push API image to GHCR:

@@ -24,10 +24,20 @@ Each step file follows the same durable structure:
 | Step | File | Status |
 | --- | --- | --- |
 | 1 | [step-1-pylint-baseline.md](./step-1-pylint-baseline.md) | Completed |
+| 2 | [step-2-remaining-pylint-findings.md](./step-2-remaining-pylint-findings.md) | Completed |
+| 3 | [step-3-radon-complexity-hotspots.md](./step-3-radon-complexity-hotspots.md) | Completed |
+| 4 | [step-4-docstring-policy.md](./step-4-docstring-policy.md) | Completed |
+| 5 | [step-5-framework-aware-suppressions.md](./step-5-framework-aware-suppressions.md) | Completed |
+| 6 | [step-6-ci-enforcement-decision.md](./step-6-ci-enforcement-decision.md) | Completed |
 
 ## 📌 Current state
 
 - Step 1 is complete.
-- The repo-level `pylint` baseline now exists.
-- Static-analysis tools are part of the dev dependency path.
-- The remaining `pylint` output is small enough to drive the next cleanup step.
+- Step 2 is complete.
+- Step 3 is complete.
+- Step 4 is complete.
+- Step 5 is complete.
+- Step 6 is complete.
+- `radon mi` remains healthy overall.
+- The biggest complexity hotspots are concentrated in large contract tests rather than the runtime path.
+- Static analysis remains intentionally local and is not part of the CI gate.

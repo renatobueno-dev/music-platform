@@ -46,8 +46,24 @@ For triggers, full job steps, required secrets, and troubleshooting, see [`githu
 
 ---
 
+## 🔎 Static Analysis
+
+Static analysis is useful here as a complementary learning and cleanup layer.
+
+- `pylint` helps surface code smells, style issues, and framework-specific lint noise
+- `radon` helps highlight complexity hotspots and maintainability signals
+
+These tools are not currently part of the required CI gate for this project, but they are valuable for understanding the codebase and planning refactors.
+
+That is an intentional decision for the current project boundary, not a missing workflow task. The CI gate remains focused on runtime and deployment validation until the static-analysis standard is something the team explicitly wants to maintain in automation.
+
+For commands and interpretation guidance, see [STATIC_ANALYSIS.md](./STATIC_ANALYSIS.md). For the detailed step-by-step cleanup path, see [static-analysis/README.md](./static-analysis/README.md).
+
+---
+
 ## 🔗 Related documents
 
 - [Setup guide](./SETUP.md)
 - [GitHub Actions guide](./cicd/github-actions.md)
+- [Static analysis guide](./STATIC_ANALYSIS.md)
 - [Development Log](./DEVELOPMENT_LOG.md)
