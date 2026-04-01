@@ -5,14 +5,7 @@ def create_song(
     client: TestClient,
     **overrides: object,
 ) -> dict:
-    payload = {
-        "title": "Numb",
-        "artist": "Linkin Park",
-        "album": "Meteora",
-        "genre": "Rock",
-        "duration_seconds": 185,
-        "release_year": 2003,
-    }
+    payload = song_expectations()
     payload.update(overrides)
 
     response = client.post("/songs/", json=payload)
@@ -20,12 +13,7 @@ def create_song(
     return response.json()
 
 
-def assert_song_payload(
-    song: dict,
-    *,
-    song_id: int | None = None,
-    expected: dict[str, object] | None = None,
-) -> None:
+def song_expectations(**overrides: object) -> dict[str, object]:
     expected_payload = {
         "title": "Numb",
         "artist": "Linkin Park",
@@ -34,13 +22,16 @@ def assert_song_payload(
         "duration_seconds": 185,
         "release_year": 2003,
     }
-    if expected is not None:
-        expected_payload.update(expected)
+    expected_payload.update(overrides)
+    return expected_payload
 
-    if song_id is not None:
-        assert song["id"] == song_id
-    actual_payload = {field_name: song[field_name] for field_name in expected_payload}
-    assert actual_payload == expected_payload
+
+def assert_song_payload(
+    song: dict,
+    expected: dict[str, object],
+) -> None:
+    actual_payload = {field_name: song[field_name] for field_name in expected}
+    assert actual_payload == expected
 
 
 def assert_song_not_found(response) -> None:
@@ -51,7 +42,7 @@ def assert_song_not_found(response) -> None:
 def test_song_create_returns_expected_payload(client: TestClient) -> None:
     created_song = create_song(client)
 
-    assert_song_payload(created_song)
+    assert_song_payload(created_song, song_expectations())
 
 
 def test_song_list_includes_created_song(client: TestClient) -> None:
@@ -70,7 +61,9 @@ def test_song_get_by_id_returns_created_song(client: TestClient) -> None:
     read_response = client.get(f"/songs/{created_song['id']}")
     assert read_response.status_code == 200
 
-    assert_song_payload(read_response.json(), song_id=created_song["id"])
+    read_song = read_response.json()
+    assert read_song["id"] == created_song["id"]
+    assert_song_payload(read_song, song_expectations())
 
 
 def test_song_patch_updates_only_expected_fields(client: TestClient) -> None:
@@ -82,11 +75,9 @@ def test_song_patch_updates_only_expected_fields(client: TestClient) -> None:
     )
     assert update_response.status_code == 200
 
-    assert_song_payload(
-        update_response.json(),
-        song_id=created_song["id"],
-        expected={"genre": "Alternative Rock"},
-    )
+    updated_song = update_response.json()
+    assert updated_song["id"] == created_song["id"]
+    assert_song_payload(updated_song, song_expectations(genre="Alternative Rock"))
 
 
 def test_song_delete_removes_song(client: TestClient) -> None:

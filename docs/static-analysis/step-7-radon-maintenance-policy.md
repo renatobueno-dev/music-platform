@@ -61,6 +61,7 @@ Coding and implementation issues during the step:
 - the service-helper follow-up needed to reduce branch density without obscuring the playlist lookup flow behind generic abstractions
 - the playlist-contract follow-up needed one extra pass because the first assertion helper shape introduced a new `pylint` `too-many-arguments` finding
 - the songs-contract follow-up showed the same maintenance pattern: the branchy endpoint-flow tests could be reduced, but a small shared assertion helper retained some acceptable local complexity
+- the final helper-cleanup pass needed a more structural change than expected: extracting default-payload builders removed the optional branches that were keeping the two shared assertion helpers at `B / 6`
 
 ## 📝 Step execution notes
 
@@ -81,14 +82,14 @@ Coding and implementation issues during the step:
   - the playlist contract tests were decomposed into one-behavior cases with smaller shared assertion helpers
 - Result of that follow-up:
   - the earlier playlist test `B / 7` hotspots moved to `A`
-  - the shared assertion helper absorbed the remaining file-local complexity at `B / 6`, which is acceptable as a readability tradeoff
+  - a later helper-cleanup pass reduced the shared playlist assertion helper from `B / 6` to `A / 3`
 - Fourth applied follow-up:
   - the songs contract tests were split into one-behavior cases with separate missing-id tests and small assertion helpers
 - Result of that follow-up:
   - the earlier songs test `B / 7` hotspots moved to `A`
-  - the shared song assertion helper now carries the remaining file-local `B / 6`, which is acceptable for readability
+  - a later helper-cleanup pass reduced the shared song assertion helper from `B / 6` to `A / 3`
 - Remaining practical hotspot focus:
-  - the remaining `B` ranks, when present, are maintenance-level assertion/helper candidates inside tests rather than runtime helpers
+  - no tracked `B` hotspots remain from this cleanup path
 - Current conclusion:
   - the repository is in a healthy `radon` state
-  - remaining `B` ranks are a maintenance queue, not a blocker
+  - the reviewed runtime and test hotspots are now all `A`

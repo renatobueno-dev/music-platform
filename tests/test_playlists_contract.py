@@ -5,11 +5,8 @@ def create_playlist(
     client: TestClient,
     **overrides: object,
 ) -> dict:
-    payload = {
-        "name": "Daily Mix",
-        "description": "Work playlist",
-        "is_public": True,
-    }
+    payload = playlist_expectations()
+    payload.pop("songs")
     payload.update(overrides)
 
     response = client.post("/playlists/", json=payload)
@@ -17,25 +14,23 @@ def create_playlist(
     return response.json()
 
 
-def assert_playlist_payload(
-    playlist: dict,
-    *,
-    playlist_id: int | None = None,
-    expected: dict[str, object] | None = None,
-) -> None:
+def playlist_expectations(**overrides: object) -> dict[str, object]:
     expected_payload = {
         "name": "Daily Mix",
         "description": "Work playlist",
         "is_public": True,
         "songs": [],
     }
-    if expected is not None:
-        expected_payload.update(expected)
+    expected_payload.update(overrides)
+    return expected_payload
 
-    if playlist_id is not None:
-        assert playlist["id"] == playlist_id
-    actual_payload = {field_name: playlist[field_name] for field_name in expected_payload}
-    assert actual_payload == expected_payload
+
+def assert_playlist_payload(
+    playlist: dict,
+    expected: dict[str, object],
+) -> None:
+    actual_payload = {field_name: playlist[field_name] for field_name in expected}
+    assert actual_payload == expected
 
 
 def assert_playlist_not_found(response) -> None:
@@ -46,7 +41,7 @@ def assert_playlist_not_found(response) -> None:
 def test_playlist_create_returns_expected_payload(client: TestClient) -> None:
     created_playlist = create_playlist(client)
 
-    assert_playlist_payload(created_playlist)
+    assert_playlist_payload(created_playlist, playlist_expectations())
 
 
 def test_playlist_list_includes_created_playlist(client: TestClient) -> None:
@@ -65,7 +60,9 @@ def test_playlist_get_by_id_returns_created_playlist(client: TestClient) -> None
     read_response = client.get(f"/playlists/{created_playlist['id']}")
     assert read_response.status_code == 200
 
-    assert_playlist_payload(read_response.json(), playlist_id=created_playlist["id"])
+    read_playlist = read_response.json()
+    assert read_playlist["id"] == created_playlist["id"]
+    assert_playlist_payload(read_playlist, playlist_expectations())
 
 
 def test_playlist_patch_updates_only_expected_fields(client: TestClient) -> None:
@@ -80,13 +77,14 @@ def test_playlist_patch_updates_only_expected_fields(client: TestClient) -> None
     )
     assert patch_response.status_code == 200
 
+    patched_playlist = patch_response.json()
+    assert patched_playlist["id"] == created_playlist["id"]
     assert_playlist_payload(
-        patch_response.json(),
-        playlist_id=created_playlist["id"],
-        expected={
-            "description": "Updated description",
-            "is_public": False,
-        },
+        patched_playlist,
+        playlist_expectations(
+            description="Updated description",
+            is_public=False,
+        ),
     )
 
 
