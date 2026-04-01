@@ -1,8 +1,11 @@
 from fastapi.testclient import TestClient
 
 
-def test_songs_crud_contract(client: TestClient) -> None:
-    create_payload = {
+def create_song(
+    client: TestClient,
+    **overrides: object,
+) -> dict:
+    payload = {
         "title": "Numb",
         "artist": "Linkin Park",
         "album": "Meteora",
@@ -10,11 +13,17 @@ def test_songs_crud_contract(client: TestClient) -> None:
         "duration_seconds": 185,
         "release_year": 2003,
     }
+    payload.update(overrides)
 
-    create_response = client.post("/songs/", json=create_payload)
-    assert create_response.status_code == 201
-    created_song = create_response.json()
+    response = client.post("/songs/", json=payload)
+    assert response.status_code == 201
+    return response.json()
+
+
+def test_song_create_and_list_contract(client: TestClient) -> None:
+    created_song = create_song(client)
     song_id = created_song["id"]
+
     assert created_song["title"] == "Numb"
     assert created_song["artist"] == "Linkin Park"
     assert created_song["genre"] == "Rock"
@@ -25,19 +34,36 @@ def test_songs_crud_contract(client: TestClient) -> None:
     listed_songs = list_response.json()
     assert any(song["id"] == song_id for song in listed_songs)
 
+
+def test_song_get_by_id_returns_created_song(client: TestClient) -> None:
+    created_song = create_song(client)
+    song_id = created_song["id"]
+
     read_response = client.get(f"/songs/{song_id}")
     assert read_response.status_code == 200
+
     read_song = read_response.json()
     assert read_song["id"] == song_id
     assert read_song["title"] == "Numb"
     assert read_song["genre"] == "Rock"
 
+
+def test_song_patch_updates_only_expected_fields(client: TestClient) -> None:
+    created_song = create_song(client)
+    song_id = created_song["id"]
+
     update_response = client.patch(f"/songs/{song_id}", json={"genre": "Alternative Rock"})
     assert update_response.status_code == 200
+
     updated_song = update_response.json()
     assert updated_song["genre"] == "Alternative Rock"
     assert updated_song["title"] == "Numb"
     assert updated_song["duration_seconds"] == 185
+
+
+def test_song_delete_removes_song(client: TestClient) -> None:
+    created_song = create_song(client)
+    song_id = created_song["id"]
 
     delete_response = client.delete(f"/songs/{song_id}")
     assert delete_response.status_code == 204

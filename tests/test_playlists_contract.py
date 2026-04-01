@@ -1,18 +1,26 @@
 from fastapi.testclient import TestClient
 
 
-def test_playlists_crud_contract(client: TestClient) -> None:
-    create_response = client.post(
-        "/playlists/",
-        json={
-            "name": "Daily Mix",
-            "description": "Work playlist",
-            "is_public": True,
-        },
-    )
-    assert create_response.status_code == 201
-    created_playlist = create_response.json()
+def create_playlist(
+    client: TestClient,
+    **overrides: object,
+) -> dict:
+    payload = {
+        "name": "Daily Mix",
+        "description": "Work playlist",
+        "is_public": True,
+    }
+    payload.update(overrides)
+
+    response = client.post("/playlists/", json=payload)
+    assert response.status_code == 201
+    return response.json()
+
+
+def test_playlist_create_and_list_contract(client: TestClient) -> None:
+    created_playlist = create_playlist(client)
     playlist_id = created_playlist["id"]
+
     assert created_playlist["name"] == "Daily Mix"
     assert created_playlist["description"] == "Work playlist"
     assert created_playlist["is_public"] is True
@@ -23,14 +31,25 @@ def test_playlists_crud_contract(client: TestClient) -> None:
     listed_playlists = list_response.json()
     assert any(playlist["id"] == playlist_id for playlist in listed_playlists)
 
+
+def test_playlist_get_by_id_returns_created_playlist(client: TestClient) -> None:
+    created_playlist = create_playlist(client)
+    playlist_id = created_playlist["id"]
+
     read_response = client.get(f"/playlists/{playlist_id}")
     assert read_response.status_code == 200
+
     read_playlist = read_response.json()
     assert read_playlist["id"] == playlist_id
     assert read_playlist["name"] == "Daily Mix"
     assert read_playlist["description"] == "Work playlist"
     assert read_playlist["is_public"] is True
     assert read_playlist["songs"] == []
+
+
+def test_playlist_patch_updates_only_expected_fields(client: TestClient) -> None:
+    created_playlist = create_playlist(client)
+    playlist_id = created_playlist["id"]
 
     patch_response = client.patch(
         f"/playlists/{playlist_id}",
@@ -40,11 +59,17 @@ def test_playlists_crud_contract(client: TestClient) -> None:
         },
     )
     assert patch_response.status_code == 200
+
     patched_playlist = patch_response.json()
     assert patched_playlist["description"] == "Updated description"
     assert patched_playlist["is_public"] is False
     assert patched_playlist["name"] == "Daily Mix"
     assert patched_playlist["songs"] == []
+
+
+def test_playlist_delete_removes_playlist(client: TestClient) -> None:
+    created_playlist = create_playlist(client)
+    playlist_id = created_playlist["id"]
 
     delete_response = client.delete(f"/playlists/{playlist_id}")
     assert delete_response.status_code == 204

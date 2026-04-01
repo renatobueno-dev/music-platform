@@ -20,20 +20,37 @@ def create_playlist(client: TestClient, *, name: str) -> dict:
     return response.json()
 
 
-def test_playlist_song_link_and_unlink_contract(client: TestClient) -> None:
+def test_playlist_song_link_adds_song_to_playlist(client: TestClient) -> None:
     song = create_song(client, title="Linked Song")
     playlist = create_playlist(client, name="Link Contract")
 
     add_response = client.post(f"/playlists/{playlist['id']}/songs/{song['id']}")
     assert add_response.status_code == 201
-    first_add_song_ids = [item["id"] for item in add_response.json()["songs"]]
-    assert first_add_song_ids == [song["id"]]
 
-    # Duplicate link should not duplicate song relation.
+    added_song_ids = [item["id"] for item in add_response.json()["songs"]]
+    assert added_song_ids == [song["id"]]
+
+
+def test_playlist_song_duplicate_link_does_not_duplicate_relation(client: TestClient) -> None:
+    song = create_song(client, title="Linked Song")
+    playlist = create_playlist(client, name="Link Contract")
+
+    first_add_response = client.post(f"/playlists/{playlist['id']}/songs/{song['id']}")
+    assert first_add_response.status_code == 201
+
     add_again_response = client.post(f"/playlists/{playlist['id']}/songs/{song['id']}")
     assert add_again_response.status_code == 201
+
     second_add_song_ids = [item["id"] for item in add_again_response.json()["songs"]]
     assert second_add_song_ids.count(song["id"]) == 1
+
+
+def test_playlist_song_unlink_removes_relation(client: TestClient) -> None:
+    song = create_song(client, title="Linked Song")
+    playlist = create_playlist(client, name="Link Contract")
+
+    add_response = client.post(f"/playlists/{playlist['id']}/songs/{song['id']}")
+    assert add_response.status_code == 201
 
     remove_response = client.delete(f"/playlists/{playlist['id']}/songs/{song['id']}")
     assert remove_response.status_code == 204
@@ -42,7 +59,17 @@ def test_playlist_song_link_and_unlink_contract(client: TestClient) -> None:
     assert playlist_after_remove.status_code == 200
     assert playlist_after_remove.json()["songs"] == []
 
-    # Repeated unlink remains controlled and idempotent.
+
+def test_playlist_song_repeated_unlink_is_idempotent(client: TestClient) -> None:
+    song = create_song(client, title="Linked Song")
+    playlist = create_playlist(client, name="Link Contract")
+
+    add_response = client.post(f"/playlists/{playlist['id']}/songs/{song['id']}")
+    assert add_response.status_code == 201
+
+    remove_response = client.delete(f"/playlists/{playlist['id']}/songs/{song['id']}")
+    assert remove_response.status_code == 204
+
     remove_again_response = client.delete(f"/playlists/{playlist['id']}/songs/{song['id']}")
     assert remove_again_response.status_code == 204
 
