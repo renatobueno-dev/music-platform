@@ -74,25 +74,40 @@ def test_playlist_song_repeated_unlink_is_idempotent(client: TestClient) -> None
     assert remove_again_response.status_code == 204
 
 
-def test_playlist_song_relation_missing_resources_return_404(client: TestClient) -> None:
+def test_playlist_song_link_returns_404_when_playlist_missing(client: TestClient) -> None:
     song = create_song(client, title="Existing Song")
+
+    response = client.post(f"/playlists/99999/songs/{song['id']}")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Playlist not found"}
+
+
+def test_playlist_song_link_returns_404_when_song_missing(client: TestClient) -> None:
     playlist = create_playlist(client, name="Existing Playlist")
 
-    missing_playlist_add_response = client.post(f"/playlists/99999/songs/{song['id']}")
-    assert missing_playlist_add_response.status_code == 404
-    assert missing_playlist_add_response.json() == {"detail": "Playlist not found"}
+    response = client.post(f"/playlists/{playlist['id']}/songs/99999")
 
-    missing_song_add_response = client.post(f"/playlists/{playlist['id']}/songs/99999")
-    assert missing_song_add_response.status_code == 404
-    assert missing_song_add_response.json() == {"detail": "Song not found"}
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Song not found"}
 
-    missing_playlist_remove_response = client.delete(f"/playlists/99999/songs/{song['id']}")
-    assert missing_playlist_remove_response.status_code == 404
-    assert missing_playlist_remove_response.json() == {"detail": "Playlist not found"}
 
-    missing_song_remove_response = client.delete(f"/playlists/{playlist['id']}/songs/99999")
-    assert missing_song_remove_response.status_code == 404
-    assert missing_song_remove_response.json() == {"detail": "Song not found"}
+def test_playlist_song_unlink_returns_404_when_playlist_missing(client: TestClient) -> None:
+    song = create_song(client, title="Existing Song")
+
+    response = client.delete(f"/playlists/99999/songs/{song['id']}")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Playlist not found"}
+
+
+def test_playlist_song_unlink_returns_404_when_song_missing(client: TestClient) -> None:
+    playlist = create_playlist(client, name="Existing Playlist")
+
+    response = client.delete(f"/playlists/{playlist['id']}/songs/99999")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Song not found"}
 
 
 def test_playlist_song_ids_patch_replaces_and_deduplicates_links(client: TestClient) -> None:

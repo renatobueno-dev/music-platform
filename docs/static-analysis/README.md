@@ -29,6 +29,7 @@ Each step file follows the same durable structure:
 | 4 | [step-4-docstring-policy.md](./step-4-docstring-policy.md) | Completed |
 | 5 | [step-5-framework-aware-suppressions.md](./step-5-framework-aware-suppressions.md) | Completed |
 | 6 | [step-6-ci-enforcement-decision.md](./step-6-ci-enforcement-decision.md) | Completed |
+| 7 | [step-7-radon-maintenance-policy.md](./step-7-radon-maintenance-policy.md) | Completed |
 
 ## 📌 Current state
 
@@ -38,6 +39,8 @@ Each step file follows the same durable structure:
 - Step 4 is complete.
 - Step 5 is complete.
 - Step 6 is complete.
+- Step 7 is complete.
 - `radon mi` remains healthy overall.
 - The biggest complexity hotspots are concentrated in large contract tests rather than the runtime path.
 - Static analysis remains intentionally local and is not part of the CI gate.
+- `radon` now has a documented maintenance policy for remaining A/B-ranked blocks.

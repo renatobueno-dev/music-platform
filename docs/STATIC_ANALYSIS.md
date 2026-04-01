@@ -165,6 +165,7 @@ Tracked steps:
 4. [Step 4 - docstring policy](./static-analysis/step-4-docstring-policy.md)
 5. [Step 5 - framework-aware suppressions](./static-analysis/step-5-framework-aware-suppressions.md)
 6. [Step 6 - CI enforcement decision](./static-analysis/step-6-ci-enforcement-decision.md)
+7. [Step 7 - `radon` maintenance policy](./static-analysis/step-7-radon-maintenance-policy.md)
 
 ---
 
@@ -178,10 +179,12 @@ At the current stage of this guide:
 - Step 4 is complete
 - Step 5 is complete
 - Step 6 is complete
+- Step 7 is complete
 - `radon mi` remains healthy overall
 - the biggest complexity signals are in large contract tests, not in core runtime code
+- the remaining `radon cc` results are now governed by a documented A/B maintenance policy
 
-This makes the current cleanup path practical and contained.
+This makes the current cleanup path practical and contained rather than open-ended.
 
 ---
 
