@@ -9,9 +9,7 @@ disable=
     missing-function-docstring,
     missing-class-docstring,
     wrong-import-position,
-    import-outside-toplevel,
-    too-few-public-methods,
-    not-callable
+    import-outside-toplevel
 
 [TYPECHECK]
 generated-members=context.*,op.*

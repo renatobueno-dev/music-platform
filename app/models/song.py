@@ -1,3 +1,5 @@
+# pylint: disable=not-callable,too-few-public-methods
+
 from datetime import date, datetime
 
 from sqlalchemy import Date, DateTime, Integer, String, func
