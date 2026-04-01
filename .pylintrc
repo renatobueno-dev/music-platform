@@ -1,0 +1,20 @@
+[MAIN]
+ignore=.venv
+persistent=no
+jobs=0
+
+[MESSAGES CONTROL]
+disable=
+    missing-module-docstring,
+    missing-function-docstring,
+    missing-class-docstring,
+    wrong-import-position,
+    import-outside-toplevel,
+    too-few-public-methods,
+    not-callable
+
+[TYPECHECK]
+generated-members=context.*,op.*
+
+[BASIC]
+const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__)|(revision|down_revision|branch_labels|depends_on)|SessionLocal)$
