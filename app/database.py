@@ -1,3 +1,5 @@
+"""Database engine and session helpers for the application runtime."""
+
 import os
 from collections.abc import Generator
 
@@ -8,6 +10,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 
 def validate_database_url(database_url: str) -> str:
+    """Validate supported database URL schemes before engine creation."""
     try:
         parsed_url = make_url(database_url)
     except ArgumentError as exc:
@@ -42,6 +45,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def get_session() -> Generator[Session, None, None]:
+    """Yield a request-scoped SQLAlchemy session and close it afterwards."""
     session = SessionLocal()
     try:
         yield session

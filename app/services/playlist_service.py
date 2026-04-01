@@ -1,3 +1,5 @@
+"""Playlist persistence helpers, including relationship resolution rules."""
+
 from collections.abc import Sequence
 import logging
 
@@ -12,6 +14,8 @@ logger = logging.getLogger(__name__)
 
 
 class MissingSongsError(Exception):
+    """Raised when playlist operations reference songs that do not exist."""
+
     def __init__(self, missing_song_ids: list[int]) -> None:
         self.missing_song_ids = missing_song_ids
         message = f"Songs not found: {missing_song_ids}"
@@ -19,11 +23,12 @@ class MissingSongsError(Exception):
 
 
 def _deduplicate_ids(ids: Sequence[int]) -> list[int]:
-    # Keep input order stable while removing duplicates.
+    """Keep input order stable while removing duplicate identifiers."""
     return list(dict.fromkeys(ids))
 
 
 def _resolve_songs(session: Session, song_ids: Sequence[int]) -> list[Song]:
+    """Resolve playlist song IDs in order or raise on the missing subset."""
     unique_song_ids = _deduplicate_ids(song_ids)
     if not unique_song_ids:
         return []
@@ -41,6 +46,7 @@ def _resolve_songs(session: Session, song_ids: Sequence[int]) -> list[Song]:
 
 
 def list_playlists(session: Session) -> list[Playlist]:
+    """Return playlists with eager-loaded songs in a stable order."""
     statement = select(Playlist).options(selectinload(Playlist.songs)).order_by(Playlist.id)
     playlists = session.scalars(statement).all()
     logger.debug("Listed %s playlists.", len(playlists))
@@ -48,6 +54,7 @@ def list_playlists(session: Session) -> list[Playlist]:
 
 
 def create_playlist(session: Session, payload: PlaylistCreate) -> Playlist:
+    """Create a playlist, resolve any initial song links, and reload it."""
     playlist_data = payload.model_dump(exclude={"song_ids"})
     playlist = Playlist(**playlist_data)
     playlist.songs = _resolve_songs(session, payload.song_ids)
@@ -61,6 +68,7 @@ def create_playlist(session: Session, payload: PlaylistCreate) -> Playlist:
 
 
 def get_playlist_by_id(session: Session, playlist_id: int) -> Playlist | None:
+    """Load one playlist with its linked songs or return ``None``."""
     statement = (
         select(Playlist)
         .where(Playlist.id == playlist_id)
@@ -70,6 +78,7 @@ def get_playlist_by_id(session: Session, playlist_id: int) -> Playlist | None:
 
 
 def update_playlist(session: Session, playlist: Playlist, payload: PlaylistUpdate) -> Playlist:
+    """Apply partial playlist updates and optionally replace song links."""
     updates = payload.model_dump(exclude_unset=True, exclude={"song_ids"})
     original_playlist_id = playlist.id
     for field_name, value in updates.items():
@@ -87,6 +96,7 @@ def update_playlist(session: Session, playlist: Playlist, payload: PlaylistUpdat
 
 
 def delete_playlist(session: Session, playlist: Playlist) -> None:
+    """Delete a playlist and commit the removal immediately."""
     playlist_id = playlist.id
     session.delete(playlist)
     session.commit()
@@ -94,6 +104,7 @@ def delete_playlist(session: Session, playlist: Playlist) -> None:
 
 
 def add_song_to_playlist(session: Session, playlist: Playlist, song: Song) -> Playlist:
+    """Link a song to a playlist without duplicating an existing relation."""
     if any(existing_song.id == song.id for existing_song in playlist.songs):
         logger.debug(
             "Song id=%s already linked to playlist id=%s. Skipping insert.",
@@ -112,6 +123,7 @@ def add_song_to_playlist(session: Session, playlist: Playlist, song: Song) -> Pl
 
 
 def remove_song_from_playlist(session: Session, playlist: Playlist, song: Song) -> Playlist | None:
+    """Unlink a song when present and keep repeated removals idempotent."""
     linked_song = next((item for item in playlist.songs if item.id == song.id), None)
     if linked_song is None:
         logger.debug(

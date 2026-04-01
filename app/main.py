@@ -1,3 +1,5 @@
+"""FastAPI application bootstrap and startup validation flow."""
+
 import logging
 import os
 import time
@@ -19,6 +21,7 @@ REQUIRED_TABLES = {"songs", "playlists", "playlist_songs"}
 
 
 def wait_for_database() -> None:
+    """Block startup until the configured database accepts simple queries."""
     for attempt in range(1, STARTUP_DB_MAX_RETRIES + 1):
         try:
             with engine.connect() as connection:
@@ -44,6 +47,7 @@ def wait_for_database() -> None:
 
 
 def validate_required_schema() -> None:
+    """Fail fast when the migrated schema is not present yet."""
     inspector = inspect(engine)
     missing_tables = sorted(
         table_name for table_name in REQUIRED_TABLES if not inspector.has_table(table_name)
@@ -57,6 +61,7 @@ def validate_required_schema() -> None:
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    """Run the migration-owned startup checks before serving requests."""
     wait_for_database()
     validate_required_schema()
     yield
@@ -71,6 +76,7 @@ app = FastAPI(
 
 @app.get("/")
 def root() -> dict[str, str]:
+    """Expose a simple root message for smoke checks."""
     return {"message": "Music Platform API is running"}
 
 
