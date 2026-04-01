@@ -115,4 +115,3 @@ def remove_song_from_playlist_endpoint(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=SONG_NOT_FOUND_DETAIL)
 
     remove_song_from_playlist(session, playlist, song)
-    return
