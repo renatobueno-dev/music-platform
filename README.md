@@ -118,8 +118,12 @@ Runtime rule: `DATABASE_URL` is required, and startup validates schema presence 
 
 ```bash
 cp .env.example .env
+# Load the same values Compose will use into the current shell
+set -a
+source .env
+set +a
 docker compose up -d db
-export DATABASE_URL=postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@localhost:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-music_platform}
+export DATABASE_URL=postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}
 ./.venv/bin/alembic upgrade head
 docker compose up -d api
 ```
@@ -161,7 +165,9 @@ Full reference in [`docs/`](./docs/README.md):
 | Istio | [readiness](./docs/istio/readiness.md) · [traffic](./docs/istio/traffic.md) · [security](./docs/istio/security.md) |
 | CI/CD | [github-actions](./docs/cicd/github-actions.md) |
 | Terraform | [scope-and-boundary](./docs/terraform/scope-and-boundary.md) · [flow-integration](./docs/terraform/flow-integration.md) · [state-management-policy](./docs/terraform/state-management-policy.md) |
-| Roadmap | [roadmap index](./docs/roadmap/README.md) · [phase 1 step 1 scope](./docs/roadmap/phase-1/step-1-minimum-test-scope.md) · [phase 1 step 2 layer decision](./docs/roadmap/phase-1/step-2-first-test-layer.md) · [phase 1 step 3 test environment](./docs/roadmap/phase-1/step-3-clean-test-environment.md) · [phase 1 step 4 green slice](./docs/roadmap/phase-1/step-4-smallest-green-slice.md) · [phase 1 step 5 songs CRUD](./docs/roadmap/phase-1/step-5-songs-crud-tests.md) · [phase 1 step 6 playlists CRUD](./docs/roadmap/phase-1/step-6-playlists-crud-tests.md) · [phase 1 step 7 relationship tests](./docs/roadmap/phase-1/step-7-playlist-song-relationship-tests.md) · [phase 1 step 8 negative tests](./docs/roadmap/phase-1/step-8-negative-tests.md) · [phase 1 step 9 local stability](./docs/roadmap/phase-1/step-9-local-test-stability.md) · [phase 1 step 10 ci integration](./docs/roadmap/phase-1/step-10-ci-test-integration.md) · [phase 2 step 11 migration ownership](./docs/roadmap/phase-2/step-11-migration-ownership.md) · [phase 2 step 12 baseline strategy](./docs/roadmap/phase-2/step-12-baseline-migration-strategy.md) · [phase 2 step 13 migration structure](./docs/roadmap/phase-2/step-13-migration-structure.md) · [phase 2 step 14 clean upgrade](./docs/roadmap/phase-2/step-14-clean-db-upgrade-validation.md) · [phase 2 step 15 reduce create_all](./docs/roadmap/phase-2/step-15-reduce-create-all-responsibility.md) · [phase 2 step 16 migration workflow docs](./docs/roadmap/phase-2/step-16-document-migration-workflow.md) · [phase 3 step 17 secrets boundary](./docs/roadmap/phase-3/step-17-secret-ownership-boundary.md) · [phase 3 step 18 secret flow alignment](./docs/roadmap/phase-3/step-18-secret-flow-alignment.md) · [phase 4 step 19 state policy](./docs/roadmap/phase-4/step-19-state-management-policy.md) · [phase 5 step 20 platform guardrails](./docs/roadmap/phase-5/step-20-platform-guardrails-expansion.md) |
+| Validation | [lifecycle validation](./docs/LIFECYCLE_VALIDATION.md) — final A1 → A2 → A3 → A4 → B1 verification record across local, tests, Docker, Kubernetes, and Istio ingress |
+| Roadmap | [roadmap index](./docs/roadmap/README.md) — canonical step-by-step execution record for tests, migrations, secret flow, Terraform, and platform guardrails |
+| Fixes | [fixes index](./docs/fixes/README.md) — post-checkpoint remediation record for the loose ends that were closed after the core stage work |
 
 ---
 

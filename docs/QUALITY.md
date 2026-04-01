@@ -40,7 +40,7 @@ Direct single-run command:
 
 ## 🚀 CI Overview
 
-The GitHub Actions workflow (`.github/workflows/deploy.yml`) runs on every PR and push to `main`. It has two jobs: a **validation job** (API contract tests, compile check, Docker build, Helm lint, Terraform validate) and a **deploy job** (image push, Terraform apply, Helm upgrade, Istio manifests, rollout check). If `KUBE_CONFIG_DATA` is absent, deploy is skipped with an explicit notice rather than failing.
+The GitHub Actions workflow (`.github/workflows/deploy.yml`) runs on pull requests, pushes to `main`, and manual `workflow_dispatch` runs. It has two jobs: a **validation job** (API contract tests, compile check, Docker build, Helm lint, Terraform validate, and rendered-manifest checks) and a **deploy job** (image push, Terraform apply, runtime secret verification, Helm upgrade, rendered Istio apply, and rollout check). If `KUBE_CONFIG_DATA` is absent, deploy is skipped with an explicit notice rather than failing. Workflow concurrency is also enabled so superseded runs for the same PR/ref are canceled automatically.
 
 For triggers, full job steps, required secrets, and troubleshooting, see [`github-actions.md`](./cicd/github-actions.md).
 

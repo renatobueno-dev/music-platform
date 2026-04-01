@@ -26,7 +26,7 @@ cp .env.example .env
 | `POSTGRES_PORT`     | `5432`                    | PostgreSQL port (host-side) — **Docker Compose only** |
 | `API_PORT`          | `8000`                    | API port exposed on host — **Docker Compose only** |
 
-> `API_PORT` and `POSTGRES_PORT` are used exclusively by Docker Compose for host-side port mapping. They have no effect in Kubernetes — port configuration there is hardcoded in Helm `values.yaml` (`api.service.port` and `db.service.port`).
+> `API_PORT` and `POSTGRES_PORT` are used exclusively by Docker Compose for host-side port mapping. They do not affect Kubernetes directly; cluster port configuration is controlled through Helm chart values such as `api.service.port` and `db.service.port`.
 
 `DATABASE_URL` is assembled by Docker Compose from the individual variables:
 ```
@@ -118,9 +118,12 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
 
 **Prerequisites:** Docker and Docker Compose installed.
 
-1. **Copy the environment file**
+1. **Copy the environment file and load it into your shell**
    ```bash
    cp .env.example .env
+   set -a
+   source .env
+   set +a
    ```
 
 2. **Start database service**
@@ -130,9 +133,11 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
 
 3. **Run migrations from local virtualenv against Compose database**
    ```bash
-   export DATABASE_URL=postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@localhost:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-music_platform}
+   export DATABASE_URL=postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}
    ./.venv/bin/alembic upgrade head
    ```
+
+   This keeps the host-side Alembic command aligned with the same values Docker Compose is using for the database container.
 
 4. **Start API service**
    ```bash
@@ -160,6 +165,18 @@ API available at: `http://localhost:8000/`
 ## ☸️ Kubernetes / Helm Setup
 
 **Prerequisites:** `kubectl` configured, Minikube or cluster running, Helm 3.x, image built and accessible.
+
+Supported cluster paths:
+
+- **Local Helm-only path:** useful for quick local chart validation on a personal cluster.
+- **Shared or Istio-enabled path:** use the full foundation flow in this order:
+  1. apply Terraform namespace baseline first
+  2. create or verify the external runtime DB secret
+  3. deploy Helm workloads
+  4. apply Alembic migrations to the cluster-reachable database
+  5. apply rendered Istio traffic/security manifests
+
+The steps below show the local Helm path first. For the full shared/mesh-enabled delivery order, see [Terraform integration flow](./terraform/flow-integration.md), [Migration workflow](./MIGRATIONS.md), and [Istio readiness](./istio/readiness.md).
 
 1. **Load image into Minikube** (local cluster only)
    ```bash
@@ -190,6 +207,7 @@ API available at: `http://localhost:8000/`
 
    In CI deploy, this shared-environment path is enforced by default (`DB_EXISTING_SECRET_NAME`, default `music-platform-secret`).
    On a fresh database, apply migrations separately before expecting API readiness (`alembic upgrade head` with cluster-reachable DB endpoint).
+   If the target namespace is shared or mesh-enabled, apply the Terraform namespace baseline before Helm so Pod Security labels and namespace guardrails are already in place for sidecar-injected workloads.
 
 3. **Forward the API port**
    ```bash

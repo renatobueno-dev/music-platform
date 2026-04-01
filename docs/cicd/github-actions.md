@@ -21,6 +21,16 @@ Automates validation, build/push, and deployment into a reproducible CI/CD workf
    - Deploy still runs only on `refs/heads/main` because the deploy job is gated by branch condition.
    - Manual runs from non-`main` refs execute validation but skip deploy.
 
+## 🔁 Concurrency behavior
+
+- Workflow concurrency is enabled.
+- Group key: `${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}`
+- Meaning:
+  - repeated runs for the same PR or ref are coalesced into one active run
+  - older in-progress runs are canceled when a newer run starts for that same group
+
+This keeps validation and deploy signals current instead of letting superseded runs continue in parallel.
+
 ## 🔧 What it checks/builds/deploys
 
 Validation job:
@@ -52,7 +62,7 @@ Deploy job:
 - Apply Terraform foundation:
   - `terraform init`
   - optional `terraform import` for pre-existing namespace
-  - `terraform apply` for namespace baseline and labels
+  - `terraform apply` for namespace baseline, required labels, and namespace guardrails (`ResourceQuota` and `LimitRange`)
 - Verify runtime DB secret exists in target namespace and includes:
   - `DATABASE_URL`
   - `POSTGRES_PASSWORD`
@@ -60,8 +70,8 @@ Deploy job:
   - image repo/tag override
   - `--set db.existingSecret=<runtime-secret-name>`
 - Apply Istio manifests:
-  - `k8s/istio/traffic-management.yaml`
-  - `k8s/istio/security-policies.yaml`
+  - `./scripts/render-istio-manifests.sh | kubectl apply -n "${NAMESPACE}" -f -`
+  - renders and applies both `k8s/istio/traffic-management.yaml` and `k8s/istio/security-policies.yaml`
 - Verify deployment and policy resources using `kubectl rollout status` and `kubectl get`.
 
 Runtime secret ownership note:
