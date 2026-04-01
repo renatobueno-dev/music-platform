@@ -5,7 +5,7 @@ api:
   replicaCount: 1
   image:
     repository: music-platform-api
-    tag: "1.6.1"
+    tag: "1.7.0"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP

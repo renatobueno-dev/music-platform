@@ -34,7 +34,7 @@ Reason:
 
 Current baseline:
 
-- The chart now tracks release-tag values in `helm/music-platform/values.yaml` (currently `1.6.1`), not `0.1.0`.
+- The chart now tracks release-tag values in `helm/music-platform/values.yaml` (currently `1.7.0`), not `0.1.0`.
 
 ### 2) Removed plaintext DB password default
 

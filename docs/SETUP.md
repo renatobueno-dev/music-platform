@@ -180,7 +180,7 @@ The steps below show the local Helm path first. For the full shared/mesh-enabled
 
 1. **Load image into Minikube** (local cluster only)
    ```bash
-   minikube image load music-platform-api:1.6.1
+   minikube image load music-platform-api:1.7.0
    ```
 
 2. **Install the Helm chart**

@@ -25,6 +25,28 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 - None yet.
 
+## [1.7.0] — 2026-03-31
+
+### Added
+
+- API contract test suite covering health, songs, playlists, playlist-song links, and environment setup, plus a local stability runner script.
+- Alembic baseline migration workflow with tracked migration files and migration-owned schema lifecycle.
+- Terraform namespace guardrail baseline for safer namespace policy management.
+
+### Changed
+
+- Application startup now follows a migration-first flow: database reachability and required schema are validated at startup, but schema creation/evolution must happen through Alembic migrations.
+- Validation workflow now installs test dependencies and runs API contract tests before the compile/build checks.
+- Setup, validation, CI, infrastructure, and operational guides were aligned to the current runtime behavior and release process.
+
+### Fixed
+
+- CI deploy now enforces use of an external runtime secret and verifies required secret keys before Helm deploy.
+
+### Security
+
+- Kubernetes runtime and mesh namespace baseline were hardened with stricter runtime defaults and safer namespace posture alignment.
+
 ## [1.6.1] — 2026-03-28
 
 ### Added
@@ -164,7 +186,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Database startup retry loop — configurable via `STARTUP_DB_MAX_RETRIES` (default `20`) and `STARTUP_DB_RETRY_SECONDS` (default `2`)
 - Eager loading (`selectinload`) on all playlist queries to prevent N+1 patterns
 
-[Unreleased]: https://github.com/renatobueno-dev/music-platform/compare/v1.6.1...HEAD
+[Unreleased]: https://github.com/renatobueno-dev/music-platform/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/renatobueno-dev/music-platform/compare/v1.6.1...v1.7.0
 [1.6.1]: https://github.com/renatobueno-dev/music-platform/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/renatobueno-dev/music-platform/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/renatobueno-dev/music-platform/compare/v1.4.0...v1.5.0
