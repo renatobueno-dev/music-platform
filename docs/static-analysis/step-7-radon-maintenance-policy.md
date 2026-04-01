@@ -59,6 +59,7 @@ Coding and implementation issues during the step:
 - once that first `B` hotspot was intentionally revisited, the safest refactor was to split by missing-resource case rather than invent new shared test abstractions
 - the main coding constraint was preserving the same `404` detail contract while decomposing one matrix-style test into four narrower endpoint-specific checks
 - the service-helper follow-up needed to reduce branch density without obscuring the playlist lookup flow behind generic abstractions
+- the playlist-contract follow-up needed one extra pass because the first assertion helper shape introduced a new `pylint` `too-many-arguments` finding
 
 ## 📝 Step execution notes
 
@@ -75,8 +76,13 @@ Coding and implementation issues during the step:
   - `_resolve_songs` was split into normalization, song lookup, and missing-song validation helpers
 - Result of that follow-up:
   - `_resolve_songs` dropped from `B / 7` to `A / 3`
+- Third applied follow-up:
+  - the playlist contract tests were decomposed into one-behavior cases with smaller shared assertion helpers
+- Result of that follow-up:
+  - the earlier playlist test `B / 7` hotspots moved to `A`
+  - the shared assertion helper absorbed the remaining file-local complexity at `B / 6`, which is acceptable as a readability tradeoff
 - Remaining practical hotspot focus:
-  - the remaining `B` ranks are now concentrated in larger contract tests rather than runtime helpers
+  - the remaining `B` ranks, when present, are maintenance-level test readability candidates rather than runtime helpers
 - Current conclusion:
   - the repository is in a healthy `radon` state
   - remaining `B` ranks are a maintenance queue, not a blocker
