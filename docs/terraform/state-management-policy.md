@@ -19,11 +19,11 @@ This policy clarifies:
 
 ## 🧱 Current backend baseline
 
-| Item | Current baseline | Source |
-| --- | --- | --- |
-| Backend type | `kubernetes` | `terraform/backend.tf` |
-| Backend namespace | `kube-system` | `terraform/backend.tf` |
-| State secret suffix | `music-platform` | `terraform/backend.tf` |
+| Item                   | Current baseline     | Source                         |
+| ---------------------- | -------------------- | ------------------------------ |
+| Backend type           | `kubernetes`         | `terraform/backend.tf`         |
+| Backend namespace      | `kube-system`        | `terraform/backend.tf`         |
+| State secret suffix    | `music-platform`     | `terraform/backend.tf`         |
 | Lock wait policy in CI | `-lock-timeout=120s` | `.github/workflows/deploy.yml` |
 
 Backend configuration gives persistent location and locking support. Operational safety still depends on disciplined execution.
@@ -76,12 +76,12 @@ Practical rule: lock conflicts are usually a coordination signal, not a Terrafor
 
 ## ♻️ Recovery thinking
 
-| Symptom | Likely cause | Recovery approach |
-| --- | --- | --- |
-| `Error acquiring the state lock` | Another writer active or stale lock | Wait for active run; retry. If stale lock is confirmed, coordinate and resolve lock intentionally. |
-| `Already exists` during apply | Resource exists in cluster but not in state | Import existing resource into state, then rerun apply. |
-| Drift after manual cluster change | Out-of-band mutation | Run plan to inspect drift; reconcile via Terraform-managed path. |
-| Backend init/access failure | Kube context or RBAC issue | Re-check kubeconfig context/permissions before rerunning init/apply. |
+| Symptom                           | Likely cause                                | Recovery approach                                                                                  |
+| --------------------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `Error acquiring the state lock`  | Another writer active or stale lock         | Wait for active run; retry. If stale lock is confirmed, coordinate and resolve lock intentionally. |
+| `Already exists` during apply     | Resource exists in cluster but not in state | Import existing resource into state, then rerun apply.                                             |
+| Drift after manual cluster change | Out-of-band mutation                        | Run plan to inspect drift; reconcile via Terraform-managed path.                                   |
+| Backend init/access failure       | Kube context or RBAC issue                  | Re-check kubeconfig context/permissions before rerunning init/apply.                               |
 
 Recovery principle: restore Terraform as source of truth, not ad hoc manual patching.
 

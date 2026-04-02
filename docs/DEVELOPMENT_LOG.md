@@ -33,7 +33,7 @@ The decision to include `added_at` in the `playlist_songs` association table was
 
 The API was structured in four explicit layers:
 
-```
+```text
 routes → schemas → services → models → database
 ```
 
@@ -54,6 +54,7 @@ This prevented the pattern of endpoints growing unintentionally and provided a c
 `main.py` implements a retry loop in `initialize_database()` to handle the case where the database is not yet ready when the API container starts. This was necessary even in development with Docker Compose — `depends_on` with a healthcheck reduces the problem but does not fully eliminate the race window.
 
 The values are configurable via environment:
+
 - `STARTUP_DB_MAX_RETRIES` (default: `20`)
 - `STARTUP_DB_RETRY_SECONDS` (default: `2`)
 
@@ -62,6 +63,7 @@ This also simplifies tuning in Kubernetes, where startup behaviour is additional
 ### `song_ids` behaviour in playlists
 
 `song_ids` in `PlaylistCreate` and `PlaylistUpdate` is optional:
+
 - on create, a playlist can be created empty and songs added later,
 - on update, if omitted, existing links are preserved; if provided, they are replaced.
 
@@ -155,6 +157,7 @@ The main risk of Terraform in a project that already uses Helm is **dual ownersh
 The decision stayed conservative on ownership, but the namespace baseline grew beyond a single label. Terraform now manages the namespace itself, required mesh/platform labels (`istio-injection=enabled` plus Pod Security Standards labels), and namespace guardrails (`ResourceQuota` and `LimitRange`). Everything managed by Helm stays exclusively in Helm.
 
 The guides in [`docs/terraform/`](./terraform/) document this decision in four layers:
+
 - [`scope-and-boundary.md`](./terraform/scope-and-boundary.md): ownership boundary, matrix and minimum locked scope
 - [`flow-integration.md`](./terraform/flow-integration.md): Terraform's position in the delivery sequence
 
@@ -188,7 +191,7 @@ The `STAGE_*_GUIDE.md` files at the project root were moved to `docs/`. Thirteen
 
 The 13 guides were reorganised into topic subdirectories:
 
-```
+```text
 docs/
 ├── domain/
 ├── containers/
@@ -243,6 +246,7 @@ Real problems that surfaced and were fixed:
 The focus of this checkpoint was understanding how a functional API progresses through infrastructure stages without losing control of what each layer does.
 
 The same pattern repeated at every stage:
+
 - understand the concept before applying it,
 - map decisions before writing code or YAML,
 - validate in small increments,

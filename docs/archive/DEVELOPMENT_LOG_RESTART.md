@@ -31,19 +31,19 @@ This is a historical execution log for a local unpushed window.
 
 ## 🧱 Commit Timeline (Unpushed Only)
 
-| Order | Commit | Date (UTC-3) | Type | Summary |
-| --- | --- | --- | --- | --- |
-| 1 | `c7c3442` | 2026-03-29 18:10 | feat | Added API contract test layer for health, songs, playlists, and playlist-song flow |
-| 2 | `5c9b72c` | 2026-03-29 18:10 | docs | Added test roadmap + Step 2 troubleshooting records |
-| 3 | `9ac085d` | 2026-03-29 20:55 | fix | Added API contract tests to CI validation workflow |
-| 4 | `f186fe9` | 2026-03-29 20:55 | docs | Documented CI test integration + troubleshooting |
-| 5 | `7c71129` | 2026-03-29 21:21 | feat | Added Alembic migration foundation + startup DB wait behavior |
-| 6 | `52ab059` | 2026-03-29 21:21 | docs | Documented migration workflow + Step 4 issues |
-| 7 | `a43edba` | 2026-03-30 11:32 | docs | Defined migration ownership boundary and baseline |
-| 8 | `9777596` | 2026-03-30 11:48 | fix | Added migration validation in CI + aligned test setup with Alembic |
-| 9 | `6cf2ce8` | 2026-03-30 11:49 | docs | Recorded combined Step 1-5 execution and migration test flow |
-| 10 | `8c71155` | 2026-03-30 13:04 | feat | Added controlled migration rollout in containers + Helm |
-| 11 | `0ca0ec4` | 2026-03-30 13:05 | docs | Documented controlled migration rollout + troubleshooting |
+| Order | Commit    | Date (UTC-3)     | Type | Summary                                                                            |
+| ----- | --------- | ---------------- | ---- | ---------------------------------------------------------------------------------- |
+| 1     | `c7c3442` | 2026-03-29 18:10 | feat | Added API contract test layer for health, songs, playlists, and playlist-song flow |
+| 2     | `5c9b72c` | 2026-03-29 18:10 | docs | Added test roadmap + Step 2 troubleshooting records                                |
+| 3     | `9ac085d` | 2026-03-29 20:55 | fix  | Added API contract tests to CI validation workflow                                 |
+| 4     | `f186fe9` | 2026-03-29 20:55 | docs | Documented CI test integration + troubleshooting                                   |
+| 5     | `7c71129` | 2026-03-29 21:21 | feat | Added Alembic migration foundation + startup DB wait behavior                      |
+| 6     | `52ab059` | 2026-03-29 21:21 | docs | Documented migration workflow + Step 4 issues                                      |
+| 7     | `a43edba` | 2026-03-30 11:32 | docs | Defined migration ownership boundary and baseline                                  |
+| 8     | `9777596` | 2026-03-30 11:48 | fix  | Added migration validation in CI + aligned test setup with Alembic                 |
+| 9     | `6cf2ce8` | 2026-03-30 11:49 | docs | Recorded combined Step 1-5 execution and migration test flow                       |
+| 10    | `8c71155` | 2026-03-30 13:04 | feat | Added controlled migration rollout in containers + Helm                            |
+| 11    | `0ca0ec4` | 2026-03-30 13:05 | docs | Documented controlled migration rollout + troubleshooting                          |
 
 ---
 

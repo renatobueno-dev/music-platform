@@ -14,11 +14,11 @@
 
 Each pod uses three distinct probes with explicit roles:
 
-| Probe           | Role                                                                   |
-|-----------------|------------------------------------------------------------------------|
-| `startupProbe`  | Gives the pod time to initialise before liveness kicks in              |
-| `readinessProbe`| Controls when the pod receives traffic                                 |
-| `livenessProbe` | Restarts the pod if the process becomes unresponsive                   |
+| Probe            | Role                                                      |
+| ---------------- | --------------------------------------------------------- |
+| `startupProbe`   | Gives the pod time to initialise before liveness kicks in |
+| `readinessProbe` | Controls when the pod receives traffic                    |
+| `livenessProbe`  | Restarts the pod if the process becomes unresponsive      |
 
 Default values (`initialDelaySeconds: 5`, `failureThreshold: 30`, `periodSeconds: 2`) give up to ~65 seconds of grace — enough for Uvicorn startup plus database connection. Configured under `api.probes` in `helm/music-platform/values.yaml`.
 

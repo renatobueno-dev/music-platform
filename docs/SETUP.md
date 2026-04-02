@@ -18,32 +18,34 @@ To use PostgreSQL locally, copy `.env.example` and set values:
 cp .env.example .env
 ```
 
-| Variable            | Default in `.env.example` | Description                            |
-|---------------------|---------------------------|----------------------------------------|
-| `POSTGRES_DB`       | `music_platform`          | Database name                          |
-| `POSTGRES_USER`     | `postgres`                | Database user                          |
-| `POSTGRES_PASSWORD` | `postgres`                | Database password                      |
+| Variable            | Default in `.env.example` | Description                                           |
+| ------------------- | ------------------------- | ----------------------------------------------------- |
+| `POSTGRES_DB`       | `music_platform`          | Database name                                         |
+| `POSTGRES_USER`     | `postgres`                | Database user                                         |
+| `POSTGRES_PASSWORD` | `postgres`                | Database password                                     |
 | `POSTGRES_PORT`     | `5432`                    | PostgreSQL port (host-side) — **Docker Compose only** |
-| `API_PORT`          | `8000`                    | API port exposed on host — **Docker Compose only** |
+| `API_PORT`          | `8000`                    | API port exposed on host — **Docker Compose only**    |
 
 > `API_PORT` and `POSTGRES_PORT` are used exclusively by Docker Compose for host-side port mapping. They do not affect Kubernetes directly; cluster port configuration is controlled through Helm chart values such as `api.service.port` and `db.service.port`.
 
 `DATABASE_URL` is assembled by Docker Compose from the individual variables:
-```
+
+```text
 postgresql+psycopg://<POSTGRES_USER>:<POSTGRES_PASSWORD>@db:5432/<POSTGRES_DB>
 ```
 
 For local use with `uvicorn`, set `DATABASE_URL` directly if connecting to PostgreSQL:
-```
+
+```text
 DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/music_platform
 ```
 
 ### Startup tuning variables
 
-| Variable                   | Default | Description                         |
-|----------------------------|---------|-------------------------------------|
-| `STARTUP_DB_MAX_RETRIES`   | `20`    | Max attempts to connect on startup  |
-| `STARTUP_DB_RETRY_SECONDS` | `2`     | Seconds between attempts            |
+| Variable                   | Default | Description                        |
+| -------------------------- | ------- | ---------------------------------- |
+| `STARTUP_DB_MAX_RETRIES`   | `20`    | Max attempts to connect on startup |
+| `STARTUP_DB_RETRY_SECONDS` | `2`     | Seconds between attempts           |
 
 ### Migration rule for all environments
 
@@ -74,32 +76,38 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
 **Prerequisites:** Python 3.12+, optionally PostgreSQL 16.
 
 1. **Create and activate a virtual environment**
+
    ```bash
    python3 -m venv .venv
    source .venv/bin/activate  # Windows: .\.venv\Scripts\activate
    ```
 
 2. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt -r requirements-dev.txt
    ```
 
 3. **Set database URL**
+
    ```bash
    export DATABASE_URL=sqlite:///./music.db
    ```
 
 4. **Apply migrations**
+
    ```bash
    ./.venv/bin/alembic upgrade head
    ```
 
 5. **Start the server**
+
    ```bash
    uvicorn app.main:app --reload
    ```
 
 6. **To use PostgreSQL locally** instead, set a PostgreSQL connection string before migrating:
+
    ```bash
    export DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/music_platform
    ./.venv/bin/alembic upgrade head
@@ -119,6 +127,7 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
 **Prerequisites:** Docker and Docker Compose installed.
 
 1. **Copy the environment file and load it into your shell**
+
    ```bash
    cp .env.example .env
    set -a
@@ -127,11 +136,13 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
    ```
 
 2. **Start database service**
+
    ```bash
    docker compose up -d db
    ```
 
 3. **Run migrations from local virtualenv against Compose database**
+
    ```bash
    export DATABASE_URL=postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}
    ./.venv/bin/alembic upgrade head
@@ -140,11 +151,13 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
    This keeps the host-side Alembic command aligned with the same values Docker Compose is using for the database container.
 
 4. **Start API service**
+
    ```bash
    docker compose up -d api
    ```
 
 5. **Verify startup**
+
    ```bash
    # Tail logs until "Application startup complete" appears
    docker compose logs -f api
@@ -153,6 +166,7 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
    ```
 
 6. **Tear down** (add `-v` to also remove the database volume)
+
    ```bash
    docker compose down
    docker compose down -v   # wipes PostgreSQL data
@@ -179,11 +193,13 @@ Supported cluster paths:
 The steps below show the local Helm path first. For the full shared/mesh-enabled delivery order, see [Terraform integration flow](./terraform/flow-integration.md), [Migration workflow](./MIGRATIONS.md), and [Istio readiness](./istio/readiness.md).
 
 1. **Load image into Minikube** (local cluster only)
+
    ```bash
    minikube image load music-platform-api:1.7.0
    ```
 
 2. **Install the Helm chart**
+
    ```bash
    helm upgrade --install music-platform ./helm/music-platform \
      --namespace music-platform \
@@ -210,6 +226,7 @@ The steps below show the local Helm path first. For the full shared/mesh-enabled
    If the target namespace is shared or mesh-enabled, apply the Terraform namespace baseline before Helm so Pod Security labels and namespace guardrails are already in place for sidecar-injected workloads.
 
 3. **Forward the API port**
+
    ```bash
    kubectl port-forward -n music-platform svc/music-platform-api 8000:8000
    ```

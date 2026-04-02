@@ -106,4 +106,3 @@ Expected:
 - [Loose ends roadmap](./loose-ends-priority-roadmap.md)
 - [Istio traffic management](../istio/traffic.md)
 - [GitHub Actions guide](../cicd/github-actions.md)
-

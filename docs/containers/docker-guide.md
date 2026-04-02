@@ -17,19 +17,21 @@ The target is not only "it works on my machine", but "it works the same way in c
 
 Use these values as the source of truth for container runtime:
 
-| Item | Value |
-| --- | --- |
-| FastAPI entrypoint | `app.main:app` |
-| Dependencies file | `requirements.txt` |
-| API port (container) | `8000` |
-| Runtime command | `uvicorn app.main:app --host 0.0.0.0 --port 8000` |
+| Item                 | Value                                             |
+| -------------------- | ------------------------------------------------- |
+| FastAPI entrypoint   | `app.main:app`                                    |
+| Dependencies file    | `requirements.txt`                                |
+| API port (container) | `8000`                                            |
+| Runtime command      | `uvicorn app.main:app --host 0.0.0.0 --port 8000` |
 
 Checkpoint:
+
 - All Docker/Compose files must respect these same values.
 
 ## 🅱️ Step B - Create Dockerfile (API only)
 
 Goal:
+
 - Build an API image that can run independently.
 
 Commands:
@@ -57,6 +59,7 @@ rm -f stepb_music.db
 ```
 
 Checkpoint:
+
 - Image builds.
 - Container starts without crashing.
 - API and docs are reachable through mapped host port.
@@ -64,6 +67,7 @@ Checkpoint:
 ## 🔵 Step C - Test container alone
 
 Goal:
+
 - Validate runtime behavior before introducing dependent services.
 
 Recommended checks:
@@ -84,6 +88,7 @@ rm -f stepc_music.db
 ```
 
 Checkpoint:
+
 - Running state remains `true`.
 - Restart count remains `0`.
 - Logs show normal startup and no traceback.

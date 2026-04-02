@@ -20,13 +20,13 @@ This project does **not** require public DNS or internet-facing validation to sa
 
 ## ✅ Validation Summary
 
-| Step | Scope | Result |
-| --- | --- | --- |
-| A1 | Local lifecycle (`venv` + `DATABASE_URL` + Alembic + app startup) | Passed |
-| A2 | API contract tests | Passed |
-| A3 | Docker lifecycle (`DB -> migrations -> API`) | Passed |
-| A4 | Kubernetes lifecycle (Terraform foundation, Helm workloads, Istio resources) | Passed |
-| B1 | Istio ingress live path (`playcatch.local` over HTTPS via ingress gateway) | Passed |
+| Step | Scope                                                                        | Result |
+| ---- | ---------------------------------------------------------------------------- | ------ |
+| A1   | Local lifecycle (`venv` + `DATABASE_URL` + Alembic + app startup)            | Passed |
+| A2   | API contract tests                                                           | Passed |
+| A3   | Docker lifecycle (`DB -> migrations -> API`)                                 | Passed |
+| A4   | Kubernetes lifecycle (Terraform foundation, Helm workloads, Istio resources) | Passed |
+| B1   | Istio ingress live path (`playcatch.local` over HTTPS via ingress gateway)   | Passed |
 
 ---
 
@@ -168,5 +168,4 @@ The project runs correctly through its full intended lifecycle and is live throu
 
 That validated lifecycle is:
 
-**A1 → A2 → A3 → A4 → B1**
-
+### A1 → A2 → A3 → A4 → B1

@@ -39,17 +39,17 @@ Manifest file: `k8s/istio/traffic-management.yaml`
 
 `scripts/render-istio-manifests.sh` accepts these environment variables:
 
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `NAMESPACE` | `music-platform` | Namespace applied to all rendered Istio resources |
-| `RELEASE_NAME` | `music-platform` | Helm release name used to derive default service/account names |
-| `CHART_NAME` | `music-platform` | Chart name used together with `RELEASE_NAME` for derived defaults |
-| `ISTIO_HOST` | `playcatch.local` | External host rendered into `Gateway` and `VirtualService` |
-| `ISTIO_TLS_SECRET` | `playcatch-tls` | TLS credential secret name used by the `Gateway` |
-| `CLUSTER_DOMAIN` | `cluster.local` | Cluster domain used in the SPIFFE principal for authorization |
-| `API_SERVICE_NAME` | derived from `RELEASE_NAME` and `CHART_NAME` | Override only if the rendered API Service name differs from chart defaults |
-| `API_SERVICE_ACCOUNT` | derived from `RELEASE_NAME` and `CHART_NAME` | Override only if the rendered API ServiceAccount name differs from chart defaults |
-| `API_SERVICE_HOST` | derived from `API_SERVICE_NAME` and `NAMESPACE` | Full in-cluster API hostname used in `VirtualService` and `DestinationRule` |
+| Variable              | Default                                         | Purpose                                                                           |
+| --------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------- |
+| `NAMESPACE`           | `music-platform`                                | Namespace applied to all rendered Istio resources                                 |
+| `RELEASE_NAME`        | `music-platform`                                | Helm release name used to derive default service/account names                    |
+| `CHART_NAME`          | `music-platform`                                | Chart name used together with `RELEASE_NAME` for derived defaults                 |
+| `ISTIO_HOST`          | `playcatch.local`                               | External host rendered into `Gateway` and `VirtualService`                        |
+| `ISTIO_TLS_SECRET`    | `playcatch-tls`                                 | TLS credential secret name used by the `Gateway`                                  |
+| `CLUSTER_DOMAIN`      | `cluster.local`                                 | Cluster domain used in the SPIFFE principal for authorization                     |
+| `API_SERVICE_NAME`    | derived from `RELEASE_NAME` and `CHART_NAME`    | Override only if the rendered API Service name differs from chart defaults        |
+| `API_SERVICE_ACCOUNT` | derived from `RELEASE_NAME` and `CHART_NAME`    | Override only if the rendered API ServiceAccount name differs from chart defaults |
+| `API_SERVICE_HOST`    | derived from `API_SERVICE_NAME` and `NAMESPACE` | Full in-cluster API hostname used in `VirtualService` and `DestinationRule`       |
 
 In most environments, only `NAMESPACE`, `ISTIO_HOST`, and `ISTIO_TLS_SECRET` need explicit overrides. The service name, service account, and service host are derived automatically from Helm naming defaults unless you intentionally changed chart naming.
 
@@ -63,20 +63,20 @@ Resources applied:
 
 `DestinationRule/playcatch-api-resilience` defines the traffic policy applied to in-cluster calls to the API service:
 
-| Setting | Value | Effect |
-|---------|-------|--------|
-| `tls.mode` | `ISTIO_MUTUAL` | mTLS required for all connections to this destination |
-| `loadBalancer` | `LEAST_REQUEST` | Route new requests to the instance with fewest active requests |
-| `connectionPool.tcp.maxConnections` | `100` | Maximum concurrent TCP connections |
-| `connectionPool.tcp.connectTimeout` | `10s` | Connection timeout |
-| `connectionPool.http.http1MaxPendingRequests` | `100` | Maximum queued HTTP/1.1 requests waiting for an upstream connection |
-| `connectionPool.http.maxRequestsPerConnection` | `100` | Recycle each upstream connection after 100 requests |
-| `connectionPool.http.maxRetries` | `3` | Maximum HTTP retries per request |
-| `connectionPool.http.idleTimeout` | `30s` | Drop idle connections after 30 seconds |
-| `outlierDetection.consecutive5xxErrors` | `5` | Eject a pod after 5 consecutive 5xx errors |
-| `outlierDetection.interval` | `10s` | Evaluation window for outlier detection |
-| `outlierDetection.baseEjectionTime` | `30s` | Minimum ejection duration |
-| `outlierDetection.maxEjectionPercent` | `50` | Cap: at most half the pods can be ejected at once |
+| Setting                                        | Value           | Effect                                                              |
+| ---------------------------------------------- | --------------- | ------------------------------------------------------------------- |
+| `tls.mode`                                     | `ISTIO_MUTUAL`  | mTLS required for all connections to this destination               |
+| `loadBalancer`                                 | `LEAST_REQUEST` | Route new requests to the instance with fewest active requests      |
+| `connectionPool.tcp.maxConnections`            | `100`           | Maximum concurrent TCP connections                                  |
+| `connectionPool.tcp.connectTimeout`            | `10s`           | Connection timeout                                                  |
+| `connectionPool.http.http1MaxPendingRequests`  | `100`           | Maximum queued HTTP/1.1 requests waiting for an upstream connection |
+| `connectionPool.http.maxRequestsPerConnection` | `100`           | Recycle each upstream connection after 100 requests                 |
+| `connectionPool.http.maxRetries`               | `3`             | Maximum HTTP retries per request                                    |
+| `connectionPool.http.idleTimeout`              | `30s`           | Drop idle connections after 30 seconds                              |
+| `outlierDetection.consecutive5xxErrors`        | `5`             | Eject a pod after 5 consecutive 5xx errors                          |
+| `outlierDetection.interval`                    | `10s`           | Evaluation window for outlier detection                             |
+| `outlierDetection.baseEjectionTime`            | `30s`           | Minimum ejection duration                                           |
+| `outlierDetection.maxEjectionPercent`          | `50`            | Cap: at most half the pods can be ejected at once                   |
 
 **Why this matters:** without a `DestinationRule`, Istio uses default round-robin load balancing with no retry or circuit-breaking behaviour. This rule adds resilience without any application code change.
 

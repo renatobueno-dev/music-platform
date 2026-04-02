@@ -7,7 +7,7 @@
 
 ## 🗄️ Data Model
 
-```
+```text
 Song ──────────────────────────────────────┐
                                            │  (via playlist_songs)
 Playlist ─────────────────────────────────┘
@@ -17,52 +17,52 @@ The many-to-many association table `playlist_songs` carries `added_at` — recor
 
 ### Song fields
 
-| Field              | Type     | Constraints                      |
-|--------------------|----------|----------------------------------|
-| `id`               | int      | primary key, indexed              |
-| `title`            | string   | max 255, required                 |
-| `artist`           | string   | max 255, required                 |
-| `album`            | string   | max 255, optional                 |
-| `genre`            | string   | max 100, optional                 |
-| `duration_seconds` | int      | ≥ 1 (Pydantic), optional         |
-| `release_date`     | date     | optional                          |
-| `release_year`     | int      | 1800–2100, optional               |
-| `created_at`       | datetime | server default, read-only         |
+| Field              | Type     | Constraints               |
+| ------------------ | -------- | ------------------------- |
+| `id`               | int      | primary key, indexed      |
+| `title`            | string   | max 255, required         |
+| `artist`           | string   | max 255, required         |
+| `album`            | string   | max 255, optional         |
+| `genre`            | string   | max 100, optional         |
+| `duration_seconds` | int      | ≥ 1 (Pydantic), optional  |
+| `release_date`     | date     | optional                  |
+| `release_year`     | int      | 1800–2100, optional       |
+| `created_at`       | datetime | server default, read-only |
 
 ### Playlist fields
 
-| Field         | Type     | Constraints                      |
-|---------------|----------|----------------------------------|
-| `id`          | int      | primary key, indexed              |
-| `name`        | string   | max 255, required                 |
-| `description` | string   | max 500, optional                 |
-| `is_public`   | bool     | default `True`                    |
-| `created_at`  | datetime | server default, read-only         |
-| `updated_at`  | datetime | server default + onupdate         |
+| Field         | Type     | Constraints               |
+| ------------- | -------- | ------------------------- |
+| `id`          | int      | primary key, indexed      |
+| `name`        | string   | max 255, required         |
+| `description` | string   | max 500, optional         |
+| `is_public`   | bool     | default `True`            |
+| `created_at`  | datetime | server default, read-only |
+| `updated_at`  | datetime | server default + onupdate |
 
 ### playlist_songs fields
 
-| Field         | Type     | Constraints                      |
-|---------------|----------|----------------------------------|
-| `playlist_id` | int FK   | cascade delete                   |
-| `song_id`     | int FK   | cascade delete                   |
-| `added_at`    | datetime | server default, read-only         |
+| Field         | Type     | Constraints               |
+| ------------- | -------- | ------------------------- |
+| `playlist_id` | int FK   | cascade delete            |
+| `song_id`     | int FK   | cascade delete            |
+| `added_at`    | datetime | server default, read-only |
 
 ---
 
 ## 🏗️ Layer Structure
 
-```
+```text
 routes → schemas → services → models → database
 ```
 
-| Layer      | File location       | Responsibility                                      |
-|------------|---------------------|-----------------------------------------------------|
-| `routes/`  | `app/routes/`       | HTTP handling, dependency injection, status codes   |
-| `schemas/` | `app/schemas/`      | Pydantic validation, input/output contracts         |
-| `services/`| `app/services/`     | Business logic, database operations                 |
-| `models/`  | `app/models/`       | SQLAlchemy ORM definitions                          |
-| `database` | `app/database.py`   | Engine, session factory, `get_session()` dependency |
+| Layer       | File location     | Responsibility                                      |
+| ----------- | ----------------- | --------------------------------------------------- |
+| `routes/`   | `app/routes/`     | HTTP handling, dependency injection, status codes   |
+| `schemas/`  | `app/schemas/`    | Pydantic validation, input/output contracts         |
+| `services/` | `app/services/`   | Business logic, database operations                 |
+| `models/`   | `app/models/`     | SQLAlchemy ORM definitions                          |
+| `database`  | `app/database.py` | Engine, session factory, `get_session()` dependency |
 
 The `services/` separation is intentional: without it, routes accumulate database logic and tests become tightly coupled to HTTP layer details.
 
@@ -81,6 +81,7 @@ All `Create` and `Update` schemas use `model_config = ConfigDict(extra="forbid")
 ### `song_ids` behaviour in playlists
 
 `song_ids` in `PlaylistCreate` defaults to an empty list — a playlist can be created empty and songs added later via the link endpoints. In `PlaylistUpdate`, `song_ids` is `None` by default:
+
 - if **omitted**: existing song links are preserved
 - if **provided**: links are replaced with the new set
 
@@ -163,10 +164,10 @@ A domain-specific exception was created instead of returning `None` or raising a
 
 `main.py` retries database connectivity on startup, then validates required tables (`songs`, `playlists`, `playlist_songs`) before serving requests.
 
-| Variable                  | Default | Purpose                                   |
-|---------------------------|---------|-------------------------------------------|
-| `STARTUP_DB_MAX_RETRIES`  | `20`    | Maximum database connection attempts      |
-| `STARTUP_DB_RETRY_SECONDS`| `2`     | Wait between connection attempts (seconds)|
+| Variable                   | Default | Purpose                                    |
+| -------------------------- | ------- | ------------------------------------------ |
+| `STARTUP_DB_MAX_RETRIES`   | `20`    | Maximum database connection attempts       |
+| `STARTUP_DB_RETRY_SECONDS` | `2`     | Wait between connection attempts (seconds) |
 
 Schema mutations are not performed in application startup anymore; migrations must run before API start (`alembic upgrade head`).  
 `depends_on: condition: service_healthy` in Docker Compose reduces the race window but does not fully eliminate it — the retry loop is the final safety net. In Kubernetes, startup behaviour is also governed by Helm probe values (`api.probes.startup` in `values.yaml`).

@@ -83,12 +83,12 @@ export DATABASE_URL=sqlite:///./music.db
 
 ## 🚀 Environment flow differences
 
-| Environment | Who applies migrations | Expected workflow |
-| --- | --- | --- |
-| Local dev | Developer | Run `alembic upgrade head` before starting `uvicorn` |
-| Docker Compose | Developer/operator | Start DB service, run migrations from host venv, then start API service |
-| Kubernetes/Helm | Operator/release flow | Apply migrations separately (pre-deploy or release step) before expecting healthy API rollout |
-| GitHub Actions deploy | Current workflow | Deploy workflow does **not** run Alembic automatically |
+| Environment           | Who applies migrations | Expected workflow                                                                             |
+| --------------------- | ---------------------- | --------------------------------------------------------------------------------------------- |
+| Local dev             | Developer              | Run `alembic upgrade head` before starting `uvicorn`                                          |
+| Docker Compose        | Developer/operator     | Start DB service, run migrations from host venv, then start API service                       |
+| Kubernetes/Helm       | Operator/release flow  | Apply migrations separately (pre-deploy or release step) before expecting healthy API rollout |
+| GitHub Actions deploy | Current workflow       | Deploy workflow does **not** run Alembic automatically                                        |
 
 ---
 

@@ -54,9 +54,9 @@ Coding and implementation issues during the step:
 - The repo-level config kept the targeted Alembic handling through `generated-members=context.*,op.*`.
 - Verification result after the refinement:
 
-  | Check | Result |
-  | --- | --- |
+  | Check                 | Result       |
+  | --------------------- | ------------ |
   | full-project `pylint` | `10.00 / 10` |
-  | `pytest -q tests` | passed |
+  | `pytest -q tests`     | passed       |
 
 - Static analysis remains a local quality tool. Runtime validation, tests, migrations, and deployment flow remain the primary project gates.

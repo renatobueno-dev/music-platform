@@ -70,15 +70,15 @@ Outcome notes:
   - link/unlink behaviors
 - Verification result after the refactor:
 
-  | Check | Result |
-  | --- | --- |
-  | `pytest -q tests` | `23 passed` |
-  | `pylint` on changed test files | `10.00 / 10` |
-  | `radon cc` hotspot result | no remaining `C` or `D` blocks in `tests/` |
+  | Check                          | Result                                     |
+  | ------------------------------ | ------------------------------------------ |
+  | `pytest -q tests`              | `23 passed`                                |
+  | `pylint` on changed test files | `10.00 / 10`                               |
+  | `radon cc` hotspot result      | no remaining `C` or `D` blocks in `tests/` |
 
 - Complexity improvement snapshot:
 
-  | Stage | Hotspot summary |
-  | --- | --- |
-  | Before Step 3 | `D / 22`, `C / 19`, `C / 11` |
-  | After Step 3 | highest remaining hotspot is `B / 9` |
+  | Stage         | Hotspot summary                      |
+  | ------------- | ------------------------------------ |
+  | Before Step 3 | `D / 22`, `C / 19`, `C / 11`         |
+  | After Step 3  | highest remaining hotspot is `B / 9` |

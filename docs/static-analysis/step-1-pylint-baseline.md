@@ -85,10 +85,10 @@ Observed problems:
 - Step completed in the current cycle.
 - Result after baseline:
 
-  | Run state | Findings | Score |
-  | --- | ---: | ---: |
-  | Before baseline | 134 | 6.24 / 10 |
-  | After baseline | 5 | 9.92 / 10 |
+  | Run state       | Findings |     Score |
+  | --------------- | -------: | --------: |
+  | Before baseline |      134 | 6.24 / 10 |
+  | After baseline  |        5 | 9.92 / 10 |
 
 - Remaining findings after this step:
   - `useless-return` in `app/routes/playlists.py`

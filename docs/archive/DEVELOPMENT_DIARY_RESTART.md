@@ -47,14 +47,14 @@ So the correction is process-first: stabilize instructions, then continue implem
 
 ## 🛡️ How We Avoid This Again (Execution Guardrails)
 
-| Risk | Guardrail | Verification checkpoint |
-| --- | --- | --- |
-| Guidance drift across turns | Lock one active step ID (for example: `Step 5`) until closed | Before each action, confirm current active step in progress update |
-| Mid-step instruction changes | Pause and re-baseline scope before editing files | Add a short “scope reset” note before continuing |
-| Mixed intent (coding + docs + release) | Split into passes: code pass, validation pass, docs pass | End each pass with explicit “pass complete” status |
-| Commit/message inconsistency | Use commit type mapping (`feat`/`fix`/`docs`/`refactor`/`chore`) per change scope | Pre-commit summary groups files by commit type |
-| Hard-to-trace failures | Log coding issues per step in troubleshooting docs | Each implemented step has one issue log (including “no blocking issue”) |
-| Unclear handoff state | Keep a visible “pending vs done” list before stopping | Final update always includes done/pending/next |
+| Risk                                   | Guardrail                                                                         | Verification checkpoint                                                 |
+| -------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Guidance drift across turns            | Lock one active step ID (for example: `Step 5`) until closed                      | Before each action, confirm current active step in progress update      |
+| Mid-step instruction changes           | Pause and re-baseline scope before editing files                                  | Add a short “scope reset” note before continuing                        |
+| Mixed intent (coding + docs + release) | Split into passes: code pass, validation pass, docs pass                          | End each pass with explicit “pass complete” status                      |
+| Commit/message inconsistency           | Use commit type mapping (`feat`/`fix`/`docs`/`refactor`/`chore`) per change scope | Pre-commit summary groups files by commit type                          |
+| Hard-to-trace failures                 | Log coding issues per step in troubleshooting docs                                | Each implemented step has one issue log (including “no blocking issue”) |
+| Unclear handoff state                  | Keep a visible “pending vs done” list before stopping                             | Final update always includes done/pending/next                          |
 
 ---
 

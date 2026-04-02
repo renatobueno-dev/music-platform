@@ -8,23 +8,23 @@ This document defines the complete CRUD route map before implementing the missin
 
 ## 🎵 Resource: Song
 
-| Operation | Method | Path | Request Schema | Response Schema | Success Status | Error Status |
-| --- | --- | --- | --- | --- | --- | --- |
-| Create song | `POST` | `/songs/` | `SongCreate` | `SongRead` | `201` | `422` |
-| List songs | `GET` | `/songs/` | - | `list[SongRead]` | `200` | - |
-| Get song by id | `GET` | `/songs/{song_id}` | - | `SongRead` | `200` | `404` |
-| Update song | `PATCH` | `/songs/{song_id}` | `SongUpdate` | `SongRead` | `200` | `404`, `422` |
-| Delete song | `DELETE` | `/songs/{song_id}` | - | - | `204` | `404` |
+| Operation      | Method   | Path               | Request Schema | Response Schema  | Success Status | Error Status |
+| -------------- | -------- | ------------------ | -------------- | ---------------- | -------------- | ------------ |
+| Create song    | `POST`   | `/songs/`          | `SongCreate`   | `SongRead`       | `201`          | `422`        |
+| List songs     | `GET`    | `/songs/`          | -              | `list[SongRead]` | `200`          | -            |
+| Get song by id | `GET`    | `/songs/{song_id}` | -              | `SongRead`       | `200`          | `404`        |
+| Update song    | `PATCH`  | `/songs/{song_id}` | `SongUpdate`   | `SongRead`       | `200`          | `404`, `422` |
+| Delete song    | `DELETE` | `/songs/{song_id}` | -              | -                | `204`          | `404`        |
 
 ## 📋 Resource: Playlist
 
-| Operation | Method | Path | Request Schema | Response Schema | Success Status | Error Status |
-| --- | --- | --- | --- | --- | --- | --- |
-| Create playlist | `POST` | `/playlists/` | `PlaylistCreate` | `PlaylistRead` | `201` | `404`, `422` |
-| List playlists | `GET` | `/playlists/` | - | `list[PlaylistRead]` | `200` | - |
-| Get playlist by id | `GET` | `/playlists/{playlist_id}` | - | `PlaylistRead` | `200` | `404` |
-| Update playlist | `PATCH` | `/playlists/{playlist_id}` | `PlaylistUpdate` | `PlaylistRead` | `200` | `404`, `422` |
-| Delete playlist | `DELETE` | `/playlists/{playlist_id}` | - | - | `204` | `404` |
+| Operation          | Method   | Path                       | Request Schema   | Response Schema      | Success Status | Error Status |
+| ------------------ | -------- | -------------------------- | ---------------- | -------------------- | -------------- | ------------ |
+| Create playlist    | `POST`   | `/playlists/`              | `PlaylistCreate` | `PlaylistRead`       | `201`          | `404`, `422` |
+| List playlists     | `GET`    | `/playlists/`              | -                | `list[PlaylistRead]` | `200`          | -            |
+| Get playlist by id | `GET`    | `/playlists/{playlist_id}` | -                | `PlaylistRead`       | `200`          | `404`        |
+| Update playlist    | `PATCH`  | `/playlists/{playlist_id}` | `PlaylistUpdate` | `PlaylistRead`       | `200`          | `404`, `422` |
+| Delete playlist    | `DELETE` | `/playlists/{playlist_id}` | -                | -                    | `204`          | `404`        |
 
 ## ❓ Why `PATCH` for updates
 
@@ -40,10 +40,10 @@ This document defines the complete CRUD route map before implementing the missin
 
 ## 🔗 Relationship endpoints (Step 6 extension)
 
-| Operation | Method | Path | Response Schema | Success Status | Error Status |
-| --- | --- | --- | --- | --- | --- |
-| Add song to playlist | `POST` | `/playlists/{playlist_id}/songs/{song_id}` | `PlaylistRead` | `201` | `404` |
-| Remove song from playlist | `DELETE` | `/playlists/{playlist_id}/songs/{song_id}` | — | `204` | `404` |
+| Operation                 | Method   | Path                                       | Response Schema | Success Status | Error Status |
+| ------------------------- | -------- | ------------------------------------------ | --------------- | -------------- | ------------ |
+| Add song to playlist      | `POST`   | `/playlists/{playlist_id}/songs/{song_id}` | `PlaylistRead`  | `201`          | `404`        |
+| Remove song from playlist | `DELETE` | `/playlists/{playlist_id}/songs/{song_id}` | —               | `204`          | `404`        |
 
 `POST` returns the full updated `PlaylistRead` object — including the complete `songs` list after the operation. This means the caller always sees the resulting playlist state without needing a separate `GET` request. If the song is already linked, the endpoint still returns `201` with the current playlist state and does not create a duplicate association. `DELETE` returns no body (`204 No Content`) and is idempotent — a second call returns `204` even if the link no longer exists.
 

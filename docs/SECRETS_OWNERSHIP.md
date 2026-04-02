@@ -19,13 +19,13 @@ This keeps boundary clear while remaining compatible with current chart capabili
 
 ## 🧭 Ownership model
 
-| Topic | Owner | Allowed definers | Delivery layer |
-| --- | --- | --- | --- |
-| Local DB credentials | Developer local environment | Local developer | `.env` / shell env vars |
-| Compose runtime DB credentials | Developer local environment | Local developer | `docker-compose.yml` environment wiring |
-| Kubernetes app DB credentials (preferred) | Pre-created Kubernetes Secret | Platform operator / release operator with cluster access | Secret referenced by Helm via `db.existingSecret` |
-| Kubernetes app DB credentials (fallback) | Helm release values at install/upgrade time | Helm operator for that release | `helm/music-platform/templates/secret.yaml` |
-| CI cluster access (`KUBE_CONFIG_DATA`) | GitHub repository secrets | Repository admin/maintainer | GitHub Actions secret injection |
+| Topic                                     | Owner                                       | Allowed definers                                         | Delivery layer                                    |
+| ----------------------------------------- | ------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------- |
+| Local DB credentials                      | Developer local environment                 | Local developer                                          | `.env` / shell env vars                           |
+| Compose runtime DB credentials            | Developer local environment                 | Local developer                                          | `docker-compose.yml` environment wiring           |
+| Kubernetes app DB credentials (preferred) | Pre-created Kubernetes Secret               | Platform operator / release operator with cluster access | Secret referenced by Helm via `db.existingSecret` |
+| Kubernetes app DB credentials (fallback)  | Helm release values at install/upgrade time | Helm operator for that release                           | `helm/music-platform/templates/secret.yaml`       |
+| CI cluster access (`KUBE_CONFIG_DATA`)    | GitHub repository secrets                   | Repository admin/maintainer                              | GitHub Actions secret injection                   |
 
 ---
 

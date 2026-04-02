@@ -7,9 +7,11 @@
 ## 🔧 Step D - Add Docker Compose (API + DB)
 
 Goal:
+
 - Run API and database as separate services managed together.
 
 Compose must include:
+
 - `api` service (FastAPI container).
 - `db` service (PostgreSQL container).
 - `DATABASE_URL` pointing from `api` to `db` service name.
@@ -41,6 +43,7 @@ docker compose exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -c "SEL
 ```
 
 Checkpoint:
+
 - Both services are running.
 - API can read/write data with DB.
 - Host-to-API mapping (`localhost:8000 -> api:8000`) works.
@@ -49,6 +52,7 @@ Checkpoint:
 ## ✅ Step E - Validate logs
 
 Goal:
+
 - Confirm there are no hidden startup, import, or DB connection errors.
 
 Commands:
@@ -59,16 +63,19 @@ docker compose logs --tail=200 db
 ```
 
 Expected API signals:
+
 - `Started server process`
 - `Waiting for application startup`
 - `Application startup complete`
 - `Uvicorn running on http://0.0.0.0:8000`
 
 Expected DB signals:
+
 - `database system is ready to accept connections`
 - `listening on ... port 5432`
 
 Red flags:
+
 - `Traceback`
 - `ModuleNotFoundError`
 - `ImportError`
@@ -77,6 +84,7 @@ Red flags:
 - `could not connect`
 
 Checkpoint:
+
 - Startup and readiness logs are clean.
 - No unresolved runtime or connectivity errors.
 

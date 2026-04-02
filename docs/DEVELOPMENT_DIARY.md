@@ -11,6 +11,7 @@ This document describes **the reasoning and decisions made at the component leve
 Most of the code and architecture decisions were produced with AI assistance.
 
 My active role throughout the process was:
+
 - reading and understanding each generated part,
 - questioning decisions that were not clear,
 - redirecting when the output did not reflect the original intent,
@@ -22,13 +23,13 @@ The deliberate focus of this checkpoint was **deployment architecture** — unde
 
 Five conversations with distinct responsibilities:
 
-| Conversation | Model | Role |
-|---|---|---|
-| 1 | GPT-5.4 | API challenge guidance |
-| 2 | GPT-5.3-Codex | Coding |
-| 3 | GPT-5.4 | Code explanation and study |
-| 4 | Claude Sonnet 4.6 | Review, design decisions, and documentation |
-| 5 | Claude Opus 4.6 | Audit — looking for loose ends |
+| Conversation | Model             | Role                                        |
+| ------------ | ----------------- | ------------------------------------------- |
+| 1            | GPT-5.4           | API challenge guidance                      |
+| 2            | GPT-5.3-Codex     | Coding                                      |
+| 3            | GPT-5.4           | Code explanation and study                  |
+| 4            | Claude Sonnet 4.6 | Review, design decisions, and documentation |
+| 5            | Claude Opus 4.6   | Audit — looking for loose ends              |
 
 **How I worked:** Read all guidance first, then asked Codex to execute each step. Even after understanding what was done, I sent the output to a separate GPT conversation for explanation. Followed that logic end to end through the full challenge. When the challenge was complete, switched to Sonnet for documentation only and Opus for auditing only. Any new guidance or coding goes back to the GPT workflow to keep consistency and sources of truth.
 
@@ -61,6 +62,7 @@ Using `PUT` with an all-optional schema would be semantically wrong. `PUT` promi
 ### `song_ids` behaviour in playlist operations
 
 `song_ids` in `PlaylistCreate` and `PlaylistUpdate` is optional:
+
 - on create: a playlist can be created empty and songs added later via relationship endpoints.
 - on update: **if omitted, existing links are preserved**; if provided, they are fully replaced.
 
@@ -77,6 +79,7 @@ The `services/` layer (`song_service.py`, `playlist_service.py`) separates datab
 Without it, routes accumulate queries, ORM calls, and business logic. The progressive creep happens quickly: first it is a small query inline, then it gets an `if` condition, then another filter. The result is routes that are hard to test without the full HTTP stack and business logic that cannot be reused.
 
 Separating services from the start meant:
+
 - routes handle only HTTP concerns (status codes, request/response shape),
 - services handle database interaction and business rules,
 - tests can reach service functions directly without spinning up an HTTP client.
@@ -181,6 +184,7 @@ The decision stayed conservative on ownership: Terraform manages the `music-plat
 ### Conservative minimum scope
 
 The minimum scope was chosen not because it is the most interesting thing Terraform can do, but because it is the safest thing it can do that adds real value:
+
 - It is infrastructure-level, not application-release-level.
 - It is a direct prerequisite for Helm deploy and Istio behaviour.
 - It has no overlap with any Helm-managed object.

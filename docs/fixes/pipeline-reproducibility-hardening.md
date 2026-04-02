@@ -113,4 +113,3 @@ Checks:
 - [Loose ends roadmap](./loose-ends-priority-roadmap.md)
 - [GitHub Actions guide](../cicd/github-actions.md)
 - [Runtime hardening](./runtime-hardening-baseline.md)
-

@@ -62,29 +62,29 @@ This document records only errors that were actually reported or observed during
 
 ### CI config issue
 
-| Error # | Error (short) | Where it happened | Stage/Step |
-| --- | --- | --- | --- |
-| 1 | `Build Push And Deploy` exit code 1 | GitHub Actions deploy run | Stage 4, Phase 5 |
-| 2 | Missing `KUBE_CONFIG_DATA` | Workflow deploy precheck/secrets | Stage 4, Phase 5 |
-| 3 | Invalid workflow file | `deploy.yml` parse | Stage 4, Phase 5 |
-| 4 | `Unrecognized named-value: 'secrets'` (line 51) | Workflow expression context | Stage 4, Phase 5 |
-| 5 | `Unrecognized named-value: 'secrets'` (line 125) | Workflow expression context | Stage 4, Phase 5 |
-| 6 | Validate job exit code 128 | CI validation run failure | Stage 4, Phase 5 |
-| 7 | Validate job exit code 50 | CI validation run failure | Stage 4, Phase 5 |
-| 8 | `cannot delete old terraform` / `Is a directory` | Terraform install step in workflow | Stage 4, Phase 5 |
+| Error # | Error (short)                                    | Where it happened                  | Stage/Step       |
+| ------- | ------------------------------------------------ | ---------------------------------- | ---------------- |
+| 1       | `Build Push And Deploy` exit code 1              | GitHub Actions deploy run          | Stage 4, Phase 5 |
+| 2       | Missing `KUBE_CONFIG_DATA`                       | Workflow deploy precheck/secrets   | Stage 4, Phase 5 |
+| 3       | Invalid workflow file                            | `deploy.yml` parse                 | Stage 4, Phase 5 |
+| 4       | `Unrecognized named-value: 'secrets'` (line 51)  | Workflow expression context        | Stage 4, Phase 5 |
+| 5       | `Unrecognized named-value: 'secrets'` (line 125) | Workflow expression context        | Stage 4, Phase 5 |
+| 6       | Validate job exit code 128                       | CI validation run failure          | Stage 4, Phase 5 |
+| 7       | Validate job exit code 50                        | CI validation run failure          | Stage 4, Phase 5 |
+| 8       | `cannot delete old terraform` / `Is a directory` | Terraform install step in workflow | Stage 4, Phase 5 |
 
 ### Checkpoint code issue
 
-| Error # | Error (short) | Where it happened | Stage/Step |
-| --- | --- | --- | --- |
-| 9 | `terraform fmt -check` failed (`main.tf`) | Terraform posture changes | Fixes Step 5 |
+| Error # | Error (short)                             | Where it happened         | Stage/Step   |
+| ------- | ----------------------------------------- | ------------------------- | ------------ |
+| 9       | `terraform fmt -check` failed (`main.tf`) | Terraform posture changes | Fixes Step 5 |
 
 ### Session/tooling issue
 
-| Error # | Error (short) | Where it happened | Stage/Step |
-| --- | --- | --- | --- |
-| 10 | `fatal: cannot change to ... No such file or directory` | Local command path typo | Session tooling |
-| 11 | Command rejected `blocked by policy` | Local command policy guard | Session tooling |
-| 12 | Docker API socket not found | Local Docker daemon unavailable | Step 3 validation run |
-| 13 | `ModuleNotFoundError: fastapi` | Host Python outside project env/container | Step 4 prep/validation |
-| 14 | `agent with id ... not found` | Agent lifecycle cleanup | E2E test cleanup |
+| Error # | Error (short)                                           | Where it happened                         | Stage/Step             |
+| ------- | ------------------------------------------------------- | ----------------------------------------- | ---------------------- |
+| 10      | `fatal: cannot change to ... No such file or directory` | Local command path typo                   | Session tooling        |
+| 11      | Command rejected `blocked by policy`                    | Local command policy guard                | Session tooling        |
+| 12      | Docker API socket not found                             | Local Docker daemon unavailable           | Step 3 validation run  |
+| 13      | `ModuleNotFoundError: fastapi`                          | Host Python outside project env/container | Step 4 prep/validation |
+| 14      | `agent with id ... not found`                           | Agent lifecycle cleanup                   | E2E test cleanup       |

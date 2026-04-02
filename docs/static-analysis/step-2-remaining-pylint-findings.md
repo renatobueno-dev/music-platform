@@ -54,8 +54,8 @@ Resolution decisions:
 - The 4 long generated Alembic lines were reflowed for formatter/linter harmony without changing migration behavior.
 - Verification result after the rerun:
 
-  | Check | Result |
-  | --- | --- |
-  | `pylint` rerun | `10.00 / 10` |
-  | Remaining `pylint` findings | `0` |
-  | Contract tests | `14 passed` |
+  | Check                       | Result       |
+  | --------------------------- | ------------ |
+  | `pylint` rerun              | `10.00 / 10` |
+  | Remaining `pylint` findings | `0`          |
+  | Contract tests              | `14 passed`  |

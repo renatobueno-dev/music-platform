@@ -106,9 +106,11 @@ kubectl port-forward svc/music-platform-api 8000:8000 -n music-platform
 ```
 
 Open:
+
 - `http://127.0.0.1:8000/docs`
 
 This example matches the current chart default in `values.yaml` (`api.image.tag: 1.7.0`). If your API image uses a different tag, update either:
+
 - `helm/music-platform/values.yaml` (`api.image.tag`), or
 - command line override:
   - `helm upgrade --install ... --set api.image.tag=<tag>`

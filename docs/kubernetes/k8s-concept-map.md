@@ -9,14 +9,17 @@ Design translation step: maps every Docker/Compose concept to its Kubernetes equ
 ## 🎯 Goal of the translation
 
 Move from:
+
 - "Docker/Compose runs my stack locally"
 
 To:
+
 - "Kubernetes resources describe and operate my stack consistently"
 
 ## 📦 Current container model (input)
 
 From `Dockerfile` + `docker-compose.yml`:
+
 - API container runs `uvicorn app.main:app --host 0.0.0.0 --port 8000`
 - API service exposes host `8000 -> container 8000`
 - PostgreSQL service runs as dependency
@@ -26,16 +29,16 @@ From `Dockerfile` + `docker-compose.yml`:
 
 ## 🔄 Compose -> Kubernetes mapping
 
-| Compose concept | Kubernetes concept | Notes |
-| --- | --- | --- |
-| `api` service container | `Deployment` for API Pods | Runtime unit for stateless app replicas. |
-| `db` service container | `StatefulSet` (preferred) or `Deployment` | DB is stateful; `StatefulSet` is safer for identity/storage semantics. |
-| `ports: 8000:8000` for API | `Service` (ClusterIP) + external access option (`NodePort` / Ingress / port-forward) | In Minikube, `NodePort` or `kubectl port-forward` is simplest. |
-| Compose service-to-service DNS (`db`) | Kubernetes DNS via `Service` (`music-platform-db.<namespace>.svc` in this chart) | App should connect to DB service name, not pod IP. |
-| Environment variables in Compose | `ConfigMap` + `Secret` + pod `env` | Non-sensitive values in `ConfigMap`; credentials in `Secret`. |
-| Compose startup dependency (`depends_on`) | Readiness model + optional init wait logic | Kubernetes does not use `depends_on`; probes and retries are the control mechanism. |
-| DB volume (`postgres_data`) | `PersistentVolumeClaim` (+ StorageClass) | Keeps DB data across pod restarts/re-schedules. |
-| Container restart policy | Controller reconciliation (Deployment/StatefulSet) | Controller ensures desired state continuously. |
+| Compose concept                           | Kubernetes concept                                                                   | Notes                                                                               |
+| ----------------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `api` service container                   | `Deployment` for API Pods                                                            | Runtime unit for stateless app replicas.                                            |
+| `db` service container                    | `StatefulSet` (preferred) or `Deployment`                                            | DB is stateful; `StatefulSet` is safer for identity/storage semantics.              |
+| `ports: 8000:8000` for API                | `Service` (ClusterIP) + external access option (`NodePort` / Ingress / port-forward) | In Minikube, `NodePort` or `kubectl port-forward` is simplest.                      |
+| Compose service-to-service DNS (`db`)     | Kubernetes DNS via `Service` (`music-platform-db.<namespace>.svc` in this chart)     | App should connect to DB service name, not pod IP.                                  |
+| Environment variables in Compose          | `ConfigMap` + `Secret` + pod `env`                                                   | Non-sensitive values in `ConfigMap`; credentials in `Secret`.                       |
+| Compose startup dependency (`depends_on`) | Readiness model + optional init wait logic                                           | Kubernetes does not use `depends_on`; probes and retries are the control mechanism. |
+| DB volume (`postgres_data`)               | `PersistentVolumeClaim` (+ StorageClass)                                             | Keeps DB data across pod restarts/re-schedules.                                     |
+| Container restart policy                  | Controller reconciliation (Deployment/StatefulSet)                                   | Controller ensures desired state continuously.                                      |
 
 ## ⚙️ Runtime unit decisions for this project
 
@@ -72,6 +75,7 @@ From `Dockerfile` + `docker-compose.yml`:
 ### API DB connection strategy
 
 Preferred approach:
+
 - Build `DATABASE_URL` from env parts in pod env, or pass full URL from `Secret`.
 - Ensure host is Kubernetes DB service name, not `localhost`.
 
@@ -80,6 +84,7 @@ Preferred approach:
 Compose uses `depends_on`; Kubernetes uses probes and controller retries.
 
 Recommended for Phase 3 manifests:
+
 - API:
   - `readinessProbe` on `/health`
   - `livenessProbe` on `/health`
@@ -91,10 +96,12 @@ Recommended for Phase 3 manifests:
 ## 🌐 Service exposure translation
 
 For local Minikube validation:
+
 - Option 1: `kubectl port-forward svc/music-platform-api 8000:8000 -n music-platform`
 - Option 2: Override chart value `api.service.type=NodePort` for node-level exposure
 
 For production-style setups (later):
+
 - `Ingress` + controller for HTTP routing
 
 ## 🧠 Helm translation mindset
@@ -102,6 +109,7 @@ For production-style setups (later):
 Helm should parameterize environment differences, not duplicate logic.
 
 Likely chart value groups:
+
 - `api.image.repository`, `api.image.tag`, `api.image.pullPolicy`
 - `api.replicaCount`, `api.resources`, `api.service.type`, `api.service.port`, `api.probes.*`
 - `db.image.repository`, `db.image.tag`, `db.image.pullPolicy`
@@ -110,6 +118,7 @@ Likely chart value groups:
 - `db.resources`
 
 Template families to expect:
+
 - `api-deployment.yaml`
 - `api-service.yaml`
 - `db-statefulset.yaml`
@@ -123,6 +132,7 @@ If you need generic examples for other projects, treat them as conceptual only a
 ## ✅ Phase 2 completion criteria
 
 This conceptual translation is complete when:
+
 - Every Compose responsibility has a Kubernetes equivalent.
 - API runtime, service exposure, configuration, and persistence strategy are explicitly defined.
 - Helm parameterization boundaries are clear before writing YAML templates.

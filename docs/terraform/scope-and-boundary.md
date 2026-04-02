@@ -32,18 +32,18 @@ Use Terraform as the infrastructure-definition layer for reproducible platform p
 
 ## 📊 Ownership matrix
 
-| Resource | Owner | Rationale |
-|----------|-------|-----------|
-| `music-platform` namespace | Terraform | Long-lived infrastructure prerequisite |
-| Namespace labels (`istio-injection=enabled` + Pod Security Standards labels) | Terraform | Platform baseline, not app config |
-| Namespace `ResourceQuota` baseline | Terraform | Platform guardrail to prevent uncontrolled namespace growth |
-| Namespace `LimitRange` baseline | Terraform | Platform guardrail for default container requests/limits |
-| API Deployment/Service | Helm | Application release packaging |
-| DB StatefulSet/Service | Helm | Application release packaging |
-| Image tag / replica count | Helm + CI/CD | Per-release values |
-| Istio Gateway/VirtualService/DestinationRule | `k8s/istio/` via CI/CD | App delivery, not infrastructure |
-| Istio PeerAuthentication/AuthorizationPolicy | `k8s/istio/` via CI/CD | App delivery, not infrastructure |
-| Pipeline execution sequence | GitHub Actions | Orchestration layer |
+| Resource                                                                     | Owner                  | Rationale                                                   |
+| ---------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------- |
+| `music-platform` namespace                                                   | Terraform              | Long-lived infrastructure prerequisite                      |
+| Namespace labels (`istio-injection=enabled` + Pod Security Standards labels) | Terraform              | Platform baseline, not app config                           |
+| Namespace `ResourceQuota` baseline                                           | Terraform              | Platform guardrail to prevent uncontrolled namespace growth |
+| Namespace `LimitRange` baseline                                              | Terraform              | Platform guardrail for default container requests/limits    |
+| API Deployment/Service                                                       | Helm                   | Application release packaging                               |
+| DB StatefulSet/Service                                                       | Helm                   | Application release packaging                               |
+| Image tag / replica count                                                    | Helm + CI/CD           | Per-release values                                          |
+| Istio Gateway/VirtualService/DestinationRule                                 | `k8s/istio/` via CI/CD | App delivery, not infrastructure                            |
+| Istio PeerAuthentication/AuthorizationPolicy                                 | `k8s/istio/` via CI/CD | App delivery, not infrastructure                            |
+| Pipeline execution sequence                                                  | GitHub Actions         | Orchestration layer                                         |
 
 **Core rule:** do not manage the same Kubernetes object from both Terraform and Helm. When a resource changes ownership, migrate it explicitly (`terraform import` / state move) before the transition to avoid dual-management conflicts.
 
@@ -77,12 +77,14 @@ These labels and guardrails are driven by Terraform inputs such as `pod_security
 - `limit_range_default` and `limit_range_default_request`: default container limits and requests for the namespace `LimitRange`.
 
 **Why this is the safest minimum:**
+
 - Infrastructure-level, not app-release-level.
 - A direct prerequisite for both Helm deploy and Istio injection.
 - No overlap with any Helm chart object.
 - Expanding from this baseline is straightforward; contracting from a broader scope requires state migration.
 
 **Out of minimum scope** (not managed by Terraform):
+
 - API/DB workloads.
 - App release values and image tags.
 - Istio traffic/security resources.
