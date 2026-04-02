@@ -1,6 +1,6 @@
 # Static Analysis Guide
 
-> How to use `pylint` and `radon` in this project to complement tests, spot code smells, and learn from the codebase quality signals.
+> How to use default `pylint` and default `radon` as the primary Python analysis baseline in this project, with tests and the other quality tools acting as supporting layers.
 
 ---
 
@@ -11,7 +11,9 @@ Static analysis is useful here for a different reason than tests:
 - tests answer whether the API behaves correctly
 - static analysis helps us inspect maintainability, consistency, and code-smell signals
 
-This project already treats tests as part of the finished baseline. Static analysis is an additional learning and cleanup layer, not the main proof that the application works.
+This project already treats tests as part of the finished baseline. Static analysis adds the main non-runtime cleanup signal, and the primary tools for that job are default `pylint` and default `radon`.
+
+The supporting tools in the broader quality stack still matter, but they are refinements around that Python baseline rather than substitutes for it.
 
 For the runtime and CI validation baseline, see [QUALITY.md](./QUALITY.md).
 
@@ -19,16 +21,17 @@ For the runtime and CI validation baseline, see [QUALITY.md](./QUALITY.md).
 
 ## 🧰 Tools Used
 
-| Tool | What it helps answer | What it does **not** prove |
-| --- | --- | --- |
-| `pylint` | Are there style problems, suspicious patterns, or easy-to-miss code smells? | That the API works at runtime |
-| `radon cc` | Which functions or tests are becoming complex? | That complex code is automatically wrong |
-| `radon mi` | How maintainable each file looks at a high level | That a high MI score means design is perfect |
+| Tool       | What it helps answer                                                        | What it does **not** prove                   |
+| ---------- | --------------------------------------------------------------------------- | -------------------------------------------- |
+| `pylint`   | Are there style problems, suspicious patterns, or easy-to-miss code smells? | That the API works at runtime                |
+| `radon cc` | Which functions or tests are becoming complex?                              | That complex code is automatically wrong     |
+| `radon mi` | How maintainable each file looks at a high level                            | That a high MI score means design is perfect |
 
 The useful mindset is:
 
 - use tests to confirm behavior
-- use static analysis to guide cleanup and refactoring
+- use default `pylint` and default `radon` to drive cleanup and refactoring
+- use the rest of the tooling stack to refine formatting, text hygiene, and infrastructure validation
 
 ---
 
@@ -42,25 +45,25 @@ The useful mindset is:
    pip install -r requirements.txt -r requirements-dev.txt
    ```
 
-2. The repo-level baseline lives in [`.pylintrc`](../.pylintrc), and the static-analysis tools are included in `requirements-dev.txt`. If the environment was created before those dependencies were added, refresh it with:
+2. The static-analysis tools are included in `requirements-dev.txt`. If the environment was created before those dependencies were added, refresh it with:
 
    ```bash
    ./.venv/bin/pip install -r requirements-dev.txt
    ```
 
-3. Run `pylint` across the Python source tree:
+3. Run **default** `pylint` across the repository's Python quality scope (`app/`, `tests/`, `migrations/`):
 
    ```bash
-   ./.venv/bin/python -m pylint $(rg --files -g '*.py')
+   ./.venv/bin/python -m pylint --rcfile=/dev/null app tests migrations
    ```
 
-4. Run `radon` cyclomatic complexity:
+4. Run default `radon` cyclomatic complexity:
 
    ```bash
-   ./.venv/bin/python -m radon cc app tests migrations -s -a
+   ./.venv/bin/python -m radon cc app tests migrations
    ```
 
-5. Run `radon` maintainability index:
+5. Run default `radon` maintainability index:
 
    ```bash
    ./.venv/bin/python -m radon mi app tests migrations
@@ -72,20 +75,20 @@ The useful mindset is:
 
 ### `pylint`
 
-Default `pylint` is useful, but this repo has a few framework patterns that create extra noise:
+Default `pylint` is the real baseline, but this repo has a few framework patterns that create extra noise:
 
 - Alembic dynamic APIs such as `alembic.context` and `alembic.op`
 - SQLAlchemy dynamic helpers such as `func.now()`
 - ORM model classes that look unusual to generic lint rules
 
-That means raw `pylint` output should be interpreted in groups:
+That means raw `pylint` output should be interpreted in groups, not dismissed:
 
-| Finding group | How to treat it first |
-| --- | --- |
-| Alembic / SQLAlchemy dynamic API warnings | Review carefully, but expect some false positives |
-| Small code-smell findings (`useless-return`, readability issues, genuinely confusing names) | Fix first |
-| Missing docstrings | Treat as style policy, not runtime risk |
-| ORM model convention noise (`too-few-public-methods`) | Usually low priority |
+| Finding group                                                                               | How to treat it first                             |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Alembic / SQLAlchemy dynamic API warnings                                                   | Review carefully, but expect some false positives |
+| Small code-smell findings (`useless-return`, readability issues, genuinely confusing names) | Fix first                                         |
+| Missing docstrings                                                                          | Treat as style policy, not runtime risk           |
+| ORM model convention noise (`too-few-public-methods`)                                       | Usually low priority                              |
 
 ### `radon`
 
@@ -95,13 +98,6 @@ That means raw `pylint` output should be interpreted in groups:
 - maintainability index gives a rough file-level health score
 
 In this project, the most complex blocks tend to be large contract tests rather than the core application runtime. That is a useful refactoring signal, but it is not the same thing as a production bug.
-
-The shipped `.pylintrc` intentionally suppresses the noisiest framework-specific warnings first so the remaining output is easier to trust:
-
-- Alembic dynamic member lookups
-- SQLAlchemy `func.now()` false positives
-- low-value docstring noise
-- test bootstrap import-position noise
 
 ---
 
@@ -116,7 +112,7 @@ Running `pylint` with no project-specific tuning can make the report look worse 
 - `migrations/`
 - SQLAlchemy model files in `app/models/`
 
-That is a good lesson for school projects too: a linter is only helpful when its rules fit the technology stack.
+That is a good lesson for school projects too: start from the default report, then separate genuine issues from framework noise instead of assuming the default tool is wrong.
 
 ### Large contract tests can become complexity hotspots
 
@@ -142,14 +138,14 @@ The biggest `radon cc` scores came from full CRUD contract tests that validate m
 
 If static-analysis cleanup becomes a follow-up task, this is the practical order:
 
-1. add a project-level `pylint` baseline so framework noise stops hiding the real signal
+1. run default `pylint` and default `radon` and group the findings by type
 2. fix the small real code-smell findings first
-3. split the highest-complexity contract tests into smaller focused tests
-4. decide a docstring policy for app code versus tests
-5. add framework-aware suppressions where the tool misunderstands the stack
-6. only consider CI lint enforcement after the local baseline is stable
+3. fix or consciously justify the naming, docstring, and import-structure findings
+4. split the highest-complexity contract tests into smaller focused tests
+5. isolate genuine framework false positives only after the default report is understood
+6. move CI enforcement in only after the default baseline is intentionally worked down
 
-This order keeps effort proportional to value.
+This order keeps the primary goal clear: fix what the default Python analysis tools report first, then refine the rest of the repo around that core.
 
 ---
 
@@ -183,6 +179,8 @@ At the current stage of this guide:
 - `radon mi` remains healthy overall
 - the biggest complexity signals are in large contract tests, not in core runtime code
 - the remaining `radon cc` results are now governed by a documented A/B maintenance policy
+- the GitHub Actions workflow now runs `pylint` and `radon` in a dedicated Python-quality job
+- that Python-quality job now uses the default `pylint` and default `radon` commands as the repo baseline
 
 This makes the current cleanup path practical and contained rather than open-ended.
 
@@ -192,16 +190,12 @@ This makes the current cleanup path practical and contained rather than open-end
 
 This guide does **not** mean:
 
-- `pylint` is currently a required CI gate
-- `radon` is part of the deployment workflow
 - static analysis replaces runtime validation
+- Ruff should absorb Pylint policy rules
+- Ruff should absorb Radon complexity/maintainability signals
+- the supporting repo-quality tools are unimportant
 
-Current decision:
-
-- static analysis remains intentionally local
-- CI enforcement is deferred unless the team later decides the extra gate is worth maintaining
-
-The current project validation baseline remains:
+The current project validation baseline still includes:
 
 - contract tests
 - migrations
@@ -209,7 +203,7 @@ The current project validation baseline remains:
 - Docker lifecycle
 - Kubernetes/Istio lifecycle
 
-See [LIFECYCLE_VALIDATION.md](./LIFECYCLE_VALIDATION.md) for that end-to-end proof.
+Static analysis now runs in CI as a separate layer because the repo baseline is stable enough to maintain that gate without mixing responsibilities. See [LIFECYCLE_VALIDATION.md](./LIFECYCLE_VALIDATION.md) for the end-to-end runtime proof.
 
 ---
 

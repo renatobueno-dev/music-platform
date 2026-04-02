@@ -23,8 +23,8 @@ env:
   KUBECTL_VERSION: v1.30.0
 
 jobs:
-  validate:
-    name: Validate Build And Manifests
+  fast-quality:
+    name: Fast Quality Checks
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -37,17 +37,81 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install runtime and test dependencies
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "22"
+
+      - name: Install development dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+
+      - name: Run fast quality checks
+        run: ./scripts/check-quality.sh fast
+
+  python-quality:
+    name: Python Quality Policy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: "3.12"
+
+      - name: Install runtime and development dependencies
         run: python3 -m pip install -r requirements.txt -r requirements-dev.txt
 
-      - name: Run API contract tests
-        run: python3 -m pytest -q tests
+      - name: Run pylint and radon
+        run: ./scripts/check-quality.sh python
 
-      - name: Compile Python modules
-        run: python3 -m compileall app
+  security-validation:
+    name: Security Validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
 
-      - name: Build Docker image (validation only)
-        run: docker build -t music-platform-api:ci .
+      - name: Set up Python 3.12
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: "3.12"
+
+      - name: Install runtime and development dependencies
+        run: python3 -m pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run security validation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_MODE: git
+        run: ./scripts/check-quality.sh security
+
+  runtime-validation:
+    name: Runtime Validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: "3.12"
+
+      - name: Install runtime and development dependencies
+        run: python3 -m pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run runtime validation
+        run: ./scripts/check-quality.sh runtime
 
       - name: Install Helm CLI
         run: |
@@ -66,34 +130,20 @@ jobs:
           sudo install -m 0755 "${TF_TMP_DIR}/terraform" /usr/local/bin/terraform
           rm -rf "${TF_TMP_DIR}"
 
-      - name: Helm lint
-        run: helm lint helm/music-platform
-
-      - name: Helm template render
-        run: helm template music-platform helm/music-platform >/tmp/rendered.yaml
-
-      - name: Helm template render (external secret mode)
-        run: |
-          helm template music-platform helm/music-platform \
-            --set db.existingSecret=runtime-db-secret >/tmp/rendered-external-secret.yaml
-
-      - name: Render Istio manifests with workflow namespace
-        run: ./scripts/render-istio-manifests.sh >/tmp/istio-rendered.yaml
-
-      - name: Terraform fmt check
-        run: terraform -chdir=terraform fmt -check
-
-      - name: Terraform init (validate mode)
-        run: terraform -chdir=terraform init -backend=false
-
-      - name: Terraform validate
-        run: terraform -chdir=terraform validate
+      - name: Run infrastructure validation
+        run: ./scripts/check-quality.sh infra
 
   deploy:
     name: Build Push And Deploy
     runs-on: ubuntu-latest
-    needs: validate
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    needs:
+      - fast-quality
+      - python-quality
+      - security-validation
+      - runtime-validation
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.ref == 'refs/heads/main'
     permissions:
       contents: read
       packages: write
@@ -170,35 +220,47 @@ jobs:
         if: steps.precheck.outputs.ready == 'true'
         run: |
           if kubectl get namespace "${NAMESPACE}" >/dev/null 2>&1; then
-            terraform -chdir=terraform import -input=false -lock-timeout="${TERRAFORM_LOCK_TIMEOUT}" kubernetes_namespace_v1.music_platform "${NAMESPACE}" || true
+            terraform -chdir=terraform import \
+              -input=false \
+              -lock-timeout="${TERRAFORM_LOCK_TIMEOUT}" \
+              kubernetes_namespace_v1.music_platform \
+              "${NAMESPACE}" || true
           fi
 
       - name: Terraform apply foundation
         if: steps.precheck.outputs.ready == 'true'
         run: |
-          terraform -chdir=terraform apply -auto-approve -input=false -lock-timeout="${TERRAFORM_LOCK_TIMEOUT}" \
+          terraform -chdir=terraform apply \
+            -auto-approve \
+            -input=false \
+            -lock-timeout="${TERRAFORM_LOCK_TIMEOUT}" \
             -var="kubeconfig_path=${HOME}/.kube/config" \
             -var="namespace_name=${NAMESPACE}"
 
       - name: Verify external DB secret for deploy
         if: steps.precheck.outputs.ready == 'true'
         run: |
-          if ! kubectl get secret "${DB_EXISTING_SECRET_NAME}" -n "${NAMESPACE}" >/dev/null 2>&1; then
-            echo "::error::Required secret '${DB_EXISTING_SECRET_NAME}' was not found in namespace '${NAMESPACE}'."
-            echo "::error::Create it with keys DATABASE_URL and POSTGRES_PASSWORD before running deploy."
+          if ! kubectl get secret "${DB_EXISTING_SECRET_NAME}" -n "${NAMESPACE}" \
+            >/dev/null 2>&1; then
+            echo "::error::Required secret '${DB_EXISTING_SECRET_NAME}' was not found"
+            echo "::error::in namespace '${NAMESPACE}'."
+            echo "::error::Create it with keys DATABASE_URL and POSTGRES_PASSWORD"
+            echo "::error::before running deploy."
             exit 1
           fi
 
           missing_keys=""
           for key in DATABASE_URL POSTGRES_PASSWORD; do
-            value="$(kubectl get secret "${DB_EXISTING_SECRET_NAME}" -n "${NAMESPACE}" -o "jsonpath={.data['${key}']}")"
+            value="$(kubectl get secret "${DB_EXISTING_SECRET_NAME}" -n "${NAMESPACE}" \
+              -o "jsonpath={.data['${key}']}")"
             if [ -z "${value}" ]; then
               missing_keys="${missing_keys} ${key}"
             fi
           done
 
           if [ -n "${missing_keys}" ]; then
-            echo "::error::Secret '${DB_EXISTING_SECRET_NAME}' is missing required keys:${missing_keys}"
+            echo "::error::Secret '${DB_EXISTING_SECRET_NAME}' is missing required"
+            echo "::error::keys:${missing_keys}"
             exit 1
           fi
 

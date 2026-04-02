@@ -25,6 +25,7 @@ Implemented educational backend project focused on consolidating real API, datab
 ## ⚠️ Security note
 
 This repository is for study. Before using in production:
+
 - Use strong, real secrets in environment variables — never commit `.env`
 - Set `DATABASE_URL` and all credentials via injected secrets, not hardcoded defaults
 - Restrict CORS origins and rotate all credentials before exposure
@@ -35,7 +36,13 @@ This repository is for study. Before using in production:
 
 ```text
 .
+├── .editorconfig
 ├── .github/workflows/deploy.yml   # CI/CD pipeline
+├── .markdownlint-cli2.yaml
+├── .pre-commit-config.yaml
+├── .prettierignore
+├── .prettierrc.json
+├── .yamllint.yml
 ├── CHANGELOG.md
 ├── alembic.ini
 ├── Dockerfile
@@ -43,6 +50,7 @@ This repository is for study. Before using in production:
 ├── .env.example
 ├── requirements.txt
 ├── requirements-dev.txt
+├── ruff.toml
 ├── app/                           # FastAPI application
 │   ├── main.py
 │   ├── database.py
@@ -60,8 +68,12 @@ This repository is for study. Before using in production:
 ├── k8s/istio/                     # Istio manifests
 │   ├── traffic-management.yaml
 │   └── security-policies.yaml
-├── scripts/                       # Deployment helpers
+├── scripts/                       # Quality, test, and deployment helpers
+│   ├── check-quality.sh
+│   ├── check-text-hygiene.py
+│   ├── format-all.sh
 │   ├── render-istio-manifests.sh
+│   ├── run-quality-tool.sh
 │   └── verify-local-tests.sh
 ├── terraform/                     # Environment foundation
 │   ├── main.tf / variables.tf / outputs.tf / versions.tf / backend.tf
@@ -85,26 +97,36 @@ This repository is for study. Before using in production:
 ## How to run locally
 
 1. Create and activate a virtual environment:
+
    ```bash
    python3 -m venv .venv
    source .venv/bin/activate  # Windows: .\.venv\Scripts\activate
    ```
+
 2. Install dependencies:
+
    ```bash
    pip install -r requirements.txt -r requirements-dev.txt
    ```
+
 3. Set database URL and apply migrations:
+
    ```bash
    export DATABASE_URL=sqlite:///./music.db
    ./.venv/bin/alembic upgrade head
    ```
+
 4. Start the server:
+
    ```bash
    uvicorn app.main:app --reload
    ```
+
    To use PostgreSQL instead, set `DATABASE_URL` to a connection string (see [SETUP.md](docs/SETUP.md)).
    For migration lifecycle rules (when to create revisions, baseline stamp flow, and deployment expectations), see [MIGRATIONS.md](docs/MIGRATIONS.md).
+
 5. Verify the contract test suite:
+
    ```bash
    ./.venv/bin/python -m pytest -q tests
    ```
@@ -136,16 +158,16 @@ The API container expects a valid `DATABASE_URL` and a migrated database. If the
 
 ## API endpoints
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `GET` | `/` | API status message |
-| `GET` | `/health` | Service healthcheck |
-| `GET/POST` | `/songs/` | List / create songs |
-| `GET/PATCH/DELETE` | `/songs/{song_id}` | Get / update / delete song |
-| `GET/POST` | `/playlists/` | List / create playlists |
-| `GET/PATCH/DELETE` | `/playlists/{playlist_id}` | Get / update / delete playlist |
-| `POST` | `/playlists/{playlist_id}/songs/{song_id}` | Link song to playlist |
-| `DELETE` | `/playlists/{playlist_id}/songs/{song_id}` | Unlink song from playlist |
+| Method             | Path                                       | Description                    |
+| ------------------ | ------------------------------------------ | ------------------------------ |
+| `GET`              | `/`                                        | API status message             |
+| `GET`              | `/health`                                  | Service healthcheck            |
+| `GET/POST`         | `/songs/`                                  | List / create songs            |
+| `GET/PATCH/DELETE` | `/songs/{song_id}`                         | Get / update / delete song     |
+| `GET/POST`         | `/playlists/`                              | List / create playlists        |
+| `GET/PATCH/DELETE` | `/playlists/{playlist_id}`                 | Get / update / delete playlist |
+| `POST`             | `/playlists/{playlist_id}/songs/{song_id}` | Link song to playlist          |
+| `DELETE`           | `/playlists/{playlist_id}/songs/{song_id}` | Unlink song from playlist      |
 
 Playlist `PATCH` accepts optional `song_ids` — if provided, links are replaced; if omitted, unchanged.
 Non-existent IDs return `404`.
@@ -156,18 +178,19 @@ Non-existent IDs return `404`.
 
 Full reference in [`docs/`](./docs/README.md):
 
-| Topic | Files |
-| --- | --- |
-| Project-wide | [CHANGELOG.md](./CHANGELOG.md) · [ARCHITECTURE.md](./docs/ARCHITECTURE.md) · [INFRA_DECISIONS.md](./docs/INFRA_DECISIONS.md) · [SETUP.md](./docs/SETUP.md) · [SECRETS_OWNERSHIP.md](./docs/SECRETS_OWNERSHIP.md) · [MIGRATIONS.md](./docs/MIGRATIONS.md) · [QUALITY.md](./docs/QUALITY.md) · [DEVELOPMENT_LOG.md](./docs/DEVELOPMENT_LOG.md) · [DEVELOPMENT_DIARY.md](./docs/DEVELOPMENT_DIARY.md) · [DEVELOPMENT_LOG_RESTART.md](./docs/archive/DEVELOPMENT_LOG_RESTART.md) · [DEVELOPMENT_DIARY_RESTART.md](./docs/archive/DEVELOPMENT_DIARY_RESTART.md) |
-| Domain | [API.md](./docs/API.md) · [domain-scope](./docs/domain/domain-scope.md) · [crud-endpoint-plan](./docs/domain/crud-endpoint-plan.md) |
-| Containers | [docker-guide](./docs/containers/docker-guide.md) · [compose-guide](./docs/containers/compose-guide.md) |
-| Kubernetes | [k8s-concept-map](./docs/kubernetes/k8s-concept-map.md) · [helm-guide](./docs/kubernetes/helm-guide.md) |
-| Istio | [readiness](./docs/istio/readiness.md) · [traffic](./docs/istio/traffic.md) · [security](./docs/istio/security.md) |
-| CI/CD | [github-actions](./docs/cicd/github-actions.md) |
-| Terraform | [scope-and-boundary](./docs/terraform/scope-and-boundary.md) · [flow-integration](./docs/terraform/flow-integration.md) · [state-management-policy](./docs/terraform/state-management-policy.md) |
-| Validation | [lifecycle validation](./docs/LIFECYCLE_VALIDATION.md) — final A1 → A2 → A3 → A4 → B1 verification record across local, tests, Docker, Kubernetes, and Istio ingress |
-| Roadmap | [roadmap index](./docs/roadmap/README.md) — canonical step-by-step execution record for tests, migrations, secret flow, Terraform, and platform guardrails |
-| Fixes | [fixes index](./docs/fixes/README.md) — post-checkpoint remediation record for the loose ends that were closed after the core stage work |
+| Topic              | Files                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Project-wide       | [CHANGELOG.md](./CHANGELOG.md) · [ARCHITECTURE.md](./docs/ARCHITECTURE.md) · [INFRA_DECISIONS.md](./docs/INFRA_DECISIONS.md) · [SETUP.md](./docs/SETUP.md) · [SECRETS_OWNERSHIP.md](./docs/SECRETS_OWNERSHIP.md) · [MIGRATIONS.md](./docs/MIGRATIONS.md) · [QUALITY.md](./docs/QUALITY.md) · [DEVELOPMENT_LOG.md](./docs/DEVELOPMENT_LOG.md) · [DEVELOPMENT_DIARY.md](./docs/DEVELOPMENT_DIARY.md) · [DEVELOPMENT_LOG_RESTART.md](./docs/archive/DEVELOPMENT_LOG_RESTART.md) · [DEVELOPMENT_DIARY_RESTART.md](./docs/archive/DEVELOPMENT_DIARY_RESTART.md) |
+| Domain             | [API.md](./docs/API.md) · [domain-scope](./docs/domain/domain-scope.md) · [crud-endpoint-plan](./docs/domain/crud-endpoint-plan.md)                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Containers         | [docker-guide](./docs/containers/docker-guide.md) · [compose-guide](./docs/containers/compose-guide.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Kubernetes         | [k8s-concept-map](./docs/kubernetes/k8s-concept-map.md) · [helm-guide](./docs/kubernetes/helm-guide.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Istio              | [readiness](./docs/istio/readiness.md) · [traffic](./docs/istio/traffic.md) · [security](./docs/istio/security.md)                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| CI/CD              | [github-actions](./docs/cicd/github-actions.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Terraform          | [scope-and-boundary](./docs/terraform/scope-and-boundary.md) · [flow-integration](./docs/terraform/flow-integration.md) · [state-management-policy](./docs/terraform/state-management-policy.md)                                                                                                                                                                                                                                                                                                                                                           |
+| Quality / analysis | [QUALITY.md](./docs/QUALITY.md) · [QUALITY_IMPLEMENTATION.md](./docs/QUALITY_IMPLEMENTATION.md) · [SECURITY_TOOLCHAIN.md](./docs/SECURITY_TOOLCHAIN.md) · [STATIC_ANALYSIS.md](./docs/STATIC_ANALYSIS.md) · [static-analysis steps](./docs/static-analysis/README.md)                                                                                                                                                                                                                                                                                      |
+| Validation         | [lifecycle validation](./docs/LIFECYCLE_VALIDATION.md) — final A1 → A2 → A3 → A4 → B1 verification record across local, tests, Docker, Kubernetes, and Istio ingress                                                                                                                                                                                                                                                                                                                                                                                       |
+| Roadmap            | [roadmap index](./docs/roadmap/README.md) — canonical step-by-step execution record for tests, migrations, secret flow, Terraform, and platform guardrails                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Fixes              | [fixes index](./docs/fixes/README.md) — post-checkpoint remediation record for the loose ends that were closed after the core stage work                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 ---
 
@@ -179,7 +202,44 @@ Contract tests are implemented and run locally with:
 ./scripts/verify-local-tests.sh 3
 ```
 
-CI also runs API contract tests on pull requests in the validation job (`python3 -m pytest -q tests`).
+CI also runs the contract suite in the dedicated runtime-validation job.
+
+---
+
+## Quality
+
+Repo-wide formatting and linting are available through the layered quality scripts:
+
+```bash
+./scripts/format-all.sh
+./scripts/check-quality.sh fast
+./scripts/check-quality.sh python
+./scripts/check-quality.sh security
+./scripts/check-quality.sh infra
+./scripts/check-quality.sh runtime
+./scripts/check-quality.sh all
+```
+
+`./scripts/check-quality.sh` is read-only. If you want the repo rewritten into the expected format, use `./scripts/format-all.sh`.
+
+Python quality has explicit boundaries in this project:
+
+- Ruff = formatting + fast lint
+- Pylint = primary static-analysis baseline
+- Radon = primary complexity + maintainability baseline
+
+Ruff does **not** replace Pylint or Radon here.
+
+For the intended **full-quality** standard, the main Python cleanup target is the findings from default `pylint` and default `radon`. The quality runner uses that default baseline directly, and the other tools in this repo are complementary refinements for formatting, docs, shell, Docker, YAML, and infrastructure hygiene.
+
+The repo also now has a dedicated security layer:
+
+- `gitleaks`
+- `pip-audit`
+- `lychee`
+- tuned `bandit`
+
+The rollout plan and the staged `trivy` follow-up are documented in [SECURITY_TOOLCHAIN.md](./docs/SECURITY_TOOLCHAIN.md).
 
 ---
 
