@@ -1,18 +1,40 @@
+# Python caches
 __pycache__/
 *.py[cod]
+
+# Local databases
 *.sqlite3
 *.db
+
+# Virtual environments
 .venv/
+
+# Test and coverage
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Tool caches
 .mypy_cache/
 .ruff_cache/
+.pre-commit-cache/
+
+# Local tools
+.tools/
+.audit/
+
+# IDE
 .idea/
 .vscode/
+
+# Secrets
 .env
+
+# Terraform
 .terraform/
 *.tfstate
 *.tfstate.*
 *.tfplan
+
+# OS
 .DS_Store

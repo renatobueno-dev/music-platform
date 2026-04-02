@@ -1,0 +1,17 @@
+extends: default
+
+ignore: |
+  .venv/
+  .pytest_cache/
+  .ruff_cache/
+  .terraform/
+  helm/music-platform/templates/
+
+rules:
+  document-start: disable
+  line-length:
+    max: 100
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+  truthy:
+    check-keys: false

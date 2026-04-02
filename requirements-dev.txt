@@ -1,5 +1,15 @@
-pytest==8.4.1
+# Testing
 httpx==0.28.1
+pytest==8.4.1
+
+# Migrations
 alembic==1.16.0
+
+# Quality tools
+bandit==1.9.4
+pip-audit==2.10.0
+pre-commit==4.5.1
 pylint==4.0.5
 radon==6.0.1
+ruff==0.15.8
+yamllint==1.38.0

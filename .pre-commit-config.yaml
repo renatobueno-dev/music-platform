@@ -1,0 +1,111 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args:
+          - --markdown-linebreak-ext=md
+      - id: mixed-line-ending
+        args:
+          - --fix=lf
+
+  - repo: local
+    hooks:
+      - id: prettier-check
+        name: prettier check
+        entry: prettier
+        language: node
+        additional_dependencies:
+          - prettier@3.8.1
+        args:
+          - --check
+          - --ignore-unknown
+        files: \.(md|yml|yaml)$
+        exclude: ^helm/music-platform/templates/
+      - id: prettier-write
+        name: prettier write
+        entry: prettier
+        language: node
+        additional_dependencies:
+          - prettier@3.8.1
+        args:
+          - --write
+          - --ignore-unknown
+        files: \.(md|yml|yaml)$
+        exclude: ^helm/music-platform/templates/
+        stages:
+          - manual
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.8
+    hooks:
+      - id: ruff-format
+        args:
+          - --check
+        files: ^(app|tests|migrations)/.*\.py$
+      - id: ruff-check
+        files: ^(app|tests|migrations)/.*\.py$
+
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.13.0-1
+    hooks:
+      - id: shfmt
+        alias: shfmt-check
+        args:
+          - -d
+          - -i
+          - "2"
+          - -ci
+          - -sr
+        files: ^scripts/.*\.sh$
+      - id: shfmt
+        alias: shfmt-write
+        args:
+          - -w
+          - -i
+          - "2"
+          - -ci
+          - -sr
+        files: ^scripts/.*\.sh$
+        stages:
+          - manual
+
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.22.0
+    hooks:
+      - id: markdownlint-cli2
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.38.0
+    hooks:
+      - id: yamllint
+        files: \.(yml|yaml)$
+        exclude: ^helm/music-platform/templates/
+
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+        files: ^scripts/.*\.sh$
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
+
+  - repo: local
+    hooks:
+      - id: hadolint
+        name: hadolint
+        entry: ./scripts/run-quality-tool.sh hadolint Dockerfile
+        language: system
+        pass_filenames: false
+        files: ^Dockerfile$
+      - id: dotenv-linter
+        name: dotenv-linter
+        entry: ./scripts/run-quality-tool.sh dotenv-linter check .env.example
+        language: system
+        pass_filenames: false
+        files: ^\.env\.example$
