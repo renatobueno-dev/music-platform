@@ -1,9 +1,13 @@
+"""Pydantic schemas for song request and response payloads."""
+
 from datetime import date, datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
 class SongCreate(BaseModel):
+    """Payload required to create a song."""
+
     title: str = Field(min_length=1, max_length=255)
     artist: str = Field(min_length=1, max_length=255)
     album: str | None = Field(default=None, max_length=255)
@@ -16,6 +20,8 @@ class SongCreate(BaseModel):
 
 
 class SongUpdate(BaseModel):
+    """Partial payload accepted when updating a song."""
+
     title: str | None = Field(default=None, min_length=1, max_length=255)
     artist: str | None = Field(default=None, min_length=1, max_length=255)
     album: str | None = Field(default=None, max_length=255)
@@ -28,6 +34,8 @@ class SongUpdate(BaseModel):
 
 
 class SongRead(BaseModel):
+    """Serialized song returned by the API."""
+
     id: int
     title: str
     artist: str

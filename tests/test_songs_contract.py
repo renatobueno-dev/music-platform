@@ -1,3 +1,5 @@
+"""Contract tests covering song CRUD behavior."""
+
 from fastapi.testclient import TestClient
 
 
@@ -5,6 +7,7 @@ def create_song(
     client: TestClient,
     **overrides: object,
 ) -> dict:
+    """Create one song through the API and return the response payload."""
     payload = song_expectations()
     payload.update(overrides)
 
@@ -14,6 +17,7 @@ def create_song(
 
 
 def song_expectations(**overrides: object) -> dict[str, object]:
+    """Build the default expected song payload for assertions."""
     expected_payload = {
         "title": "Numb",
         "artist": "Linkin Park",
@@ -30,22 +34,26 @@ def assert_song_payload(
     song: dict,
     expected: dict[str, object],
 ) -> None:
+    """Assert that a song payload matches the expected business fields."""
     actual_payload = {field_name: song[field_name] for field_name in expected}
     assert actual_payload == expected
 
 
 def assert_song_not_found(response) -> None:
+    """Assert that an API response represents a missing song."""
     assert response.status_code == 404
     assert response.json() == {"detail": "Song not found"}
 
 
 def test_song_create_returns_expected_payload(client: TestClient) -> None:
+    """Verify creating a song returns the expected serialized payload."""
     created_song = create_song(client)
 
     assert_song_payload(created_song, song_expectations())
 
 
 def test_song_list_includes_created_song(client: TestClient) -> None:
+    """Verify the song list endpoint includes newly created songs."""
     created_song = create_song(client)
 
     list_response = client.get("/songs/")
@@ -56,6 +64,7 @@ def test_song_list_includes_created_song(client: TestClient) -> None:
 
 
 def test_song_get_by_id_returns_created_song(client: TestClient) -> None:
+    """Verify fetching by id returns the created song."""
     created_song = create_song(client)
 
     read_response = client.get(f"/songs/{created_song['id']}")
@@ -67,6 +76,7 @@ def test_song_get_by_id_returns_created_song(client: TestClient) -> None:
 
 
 def test_song_patch_updates_only_expected_fields(client: TestClient) -> None:
+    """Verify patch only changes the targeted song fields."""
     created_song = create_song(client)
 
     update_response = client.patch(
@@ -81,6 +91,7 @@ def test_song_patch_updates_only_expected_fields(client: TestClient) -> None:
 
 
 def test_song_delete_removes_song(client: TestClient) -> None:
+    """Verify deleting a song removes it from subsequent reads."""
     created_song = create_song(client)
 
     delete_response = client.delete(f"/songs/{created_song['id']}")
@@ -91,24 +102,28 @@ def test_song_delete_removes_song(client: TestClient) -> None:
 
 
 def test_song_get_missing_id_returns_404(client: TestClient) -> None:
+    """Verify reading an unknown song id returns HTTP 404."""
     response = client.get("/songs/99999")
 
     assert_song_not_found(response)
 
 
 def test_song_patch_missing_id_returns_404(client: TestClient) -> None:
+    """Verify patching an unknown song id returns HTTP 404."""
     response = client.patch("/songs/99999", json={"genre": "Any Genre"})
 
     assert_song_not_found(response)
 
 
 def test_song_delete_missing_id_returns_404(client: TestClient) -> None:
+    """Verify deleting an unknown song id returns HTTP 404."""
     response = client.delete("/songs/99999")
 
     assert_song_not_found(response)
 
 
 def test_create_song_missing_required_field_returns_422(client: TestClient) -> None:
+    """Verify missing required song fields are rejected by validation."""
     response = client.post(
         "/songs/",
         json={
@@ -120,6 +135,7 @@ def test_create_song_missing_required_field_returns_422(client: TestClient) -> N
 
 
 def test_create_song_invalid_duration_returns_422(client: TestClient) -> None:
+    """Verify invalid duration values are rejected by validation."""
     response = client.post(
         "/songs/",
         json={
@@ -133,6 +149,7 @@ def test_create_song_invalid_duration_returns_422(client: TestClient) -> None:
 
 
 def test_create_song_invalid_field_type_returns_422(client: TestClient) -> None:
+    """Verify invalid field types are rejected by validation."""
     response = client.post(
         "/songs/",
         json={

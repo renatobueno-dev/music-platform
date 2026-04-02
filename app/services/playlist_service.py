@@ -1,7 +1,7 @@
 """Playlist persistence helpers, including relationship resolution rules."""
 
-from collections.abc import Sequence
 import logging
+from collections.abc import Sequence
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
@@ -83,9 +83,7 @@ def create_playlist(session: Session, payload: PlaylistCreate) -> Playlist:
 def get_playlist_by_id(session: Session, playlist_id: int) -> Playlist | None:
     """Load one playlist with its linked songs or return ``None``."""
     statement = (
-        select(Playlist)
-        .where(Playlist.id == playlist_id)
-        .options(selectinload(Playlist.songs))
+        select(Playlist).where(Playlist.id == playlist_id).options(selectinload(Playlist.songs))
     )
     return session.scalar(statement)
 

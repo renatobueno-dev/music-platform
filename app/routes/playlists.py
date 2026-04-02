@@ -1,9 +1,10 @@
+"""Playlist route definitions and HTTP error mapping."""
+
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
 from app.database import get_session
 from app.schemas.playlist import PlaylistCreate, PlaylistRead, PlaylistUpdate
-from app.services.song_service import get_song_by_id
 from app.services.playlist_service import (
     MissingSongsError,
     add_song_to_playlist,
@@ -14,6 +15,7 @@ from app.services.playlist_service import (
     remove_song_from_playlist,
     update_playlist,
 )
+from app.services.song_service import get_song_by_id
 
 router = APIRouter(prefix="/playlists", tags=["playlists"])
 PLAYLIST_NOT_FOUND_DETAIL = "Playlist not found"
@@ -21,11 +23,13 @@ SONG_NOT_FOUND_DETAIL = "Song not found"
 
 
 def format_missing_songs_detail(missing_song_ids: list[int]) -> str:
+    """Format the missing-song payload detail used by playlist endpoints."""
     return f"Songs not found: {missing_song_ids}"
 
 
 @router.get("/", response_model=list[PlaylistRead])
 def read_playlists(session: Session = Depends(get_session)) -> list[PlaylistRead]:
+    """List persisted playlists using the service-layer ordering rules."""
     return list_playlists(session)
 
 
@@ -34,6 +38,7 @@ def create_playlist_endpoint(
     payload: PlaylistCreate,
     session: Session = Depends(get_session),
 ) -> PlaylistRead:
+    """Create one playlist and map missing-song errors to HTTP 404."""
     try:
         return create_playlist(session, payload)
     except MissingSongsError as exc:
@@ -45,6 +50,7 @@ def create_playlist_endpoint(
 
 @router.get("/{playlist_id}", response_model=PlaylistRead)
 def read_playlist(playlist_id: int, session: Session = Depends(get_session)) -> PlaylistRead:
+    """Return one playlist or translate a missing record into HTTP 404."""
     playlist = get_playlist_by_id(session, playlist_id)
     if playlist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=PLAYLIST_NOT_FOUND_DETAIL)
@@ -57,6 +63,7 @@ def update_playlist_endpoint(
     payload: PlaylistUpdate,
     session: Session = Depends(get_session),
 ) -> PlaylistRead:
+    """Apply partial playlist updates and map missing songs to HTTP 404."""
     playlist = get_playlist_by_id(session, playlist_id)
     if playlist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=PLAYLIST_NOT_FOUND_DETAIL)
@@ -71,6 +78,7 @@ def update_playlist_endpoint(
 
 @router.delete("/{playlist_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_playlist_endpoint(playlist_id: int, session: Session = Depends(get_session)) -> Response:
+    """Delete a playlist and return an empty successful response."""
     playlist = get_playlist_by_id(session, playlist_id)
     if playlist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=PLAYLIST_NOT_FOUND_DETAIL)
@@ -89,6 +97,7 @@ def add_song_to_playlist_endpoint(
     song_id: int,
     session: Session = Depends(get_session),
 ) -> PlaylistRead:
+    """Link a song to a playlist after validating both records exist."""
     playlist = get_playlist_by_id(session, playlist_id)
     if playlist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=PLAYLIST_NOT_FOUND_DETAIL)
@@ -106,6 +115,7 @@ def remove_song_from_playlist_endpoint(
     song_id: int,
     session: Session = Depends(get_session),
 ) -> None:
+    """Unlink a song from a playlist after validating both records exist."""
     playlist = get_playlist_by_id(session, playlist_id)
     if playlist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=PLAYLIST_NOT_FOUND_DETAIL)

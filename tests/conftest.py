@@ -1,8 +1,12 @@
+"""Pytest fixtures and disposable test-database bootstrap."""
+
 import os
 import shutil
 import sys
 import tempfile
+from importlib import import_module
 from pathlib import Path
+from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
@@ -18,26 +22,40 @@ os.environ["DATABASE_URL"] = f"sqlite:///{TEST_DB_PATH}"
 os.environ["STARTUP_DB_MAX_RETRIES"] = "1"
 os.environ["STARTUP_DB_RETRY_SECONDS"] = "0"
 
-from app.database import engine  # noqa: E402
-from app.main import app  # noqa: E402
-from app.models import Base  # noqa: E402
+
+def load_test_runtime() -> tuple[Any, Any, Any]:
+    """Import runtime modules after the disposable environment is configured."""
+    database_module = import_module("app.database")
+    main_module = import_module("app.main")
+    models_module = import_module("app.models")
+    return (
+        database_module.engine,
+        main_module.app,
+        models_module.Base,
+    )
+
+
+ENGINE, APP, BASE = load_test_runtime()
 
 
 @pytest.fixture(autouse=True)
 def reset_database() -> None:
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
+    """Reset the database schema before every test case."""
+    BASE.metadata.drop_all(bind=ENGINE)
+    BASE.metadata.create_all(bind=ENGINE)
     yield
 
 
 @pytest.fixture(scope="session", autouse=True)
 def cleanup_test_artifacts() -> None:
+    """Dispose the engine and remove temporary files after the test session."""
     yield
-    engine.dispose()
+    ENGINE.dispose()
     shutil.rmtree(TEST_RUN_DIR, ignore_errors=True)
 
 
 @pytest.fixture
 def client() -> TestClient:
-    with TestClient(app) as test_client:
+    """Return a FastAPI test client bound to the disposable database."""
+    with TestClient(APP) as test_client:
         yield test_client

@@ -1,7 +1,10 @@
+"""Contract tests for playlist-song relationship endpoints."""
+
 from fastapi.testclient import TestClient
 
 
 def create_song(client: TestClient, *, title: str) -> dict:
+    """Create one song used by relationship endpoint tests."""
     response = client.post(
         "/songs/",
         json={
@@ -15,12 +18,14 @@ def create_song(client: TestClient, *, title: str) -> dict:
 
 
 def create_playlist(client: TestClient, *, name: str) -> dict:
+    """Create one playlist used by relationship endpoint tests."""
     response = client.post("/playlists/", json={"name": name})
     assert response.status_code == 201
     return response.json()
 
 
 def test_playlist_song_link_adds_song_to_playlist(client: TestClient) -> None:
+    """Verify linking a song adds it to the playlist relation."""
     song = create_song(client, title="Linked Song")
     playlist = create_playlist(client, name="Link Contract")
 
@@ -32,6 +37,7 @@ def test_playlist_song_link_adds_song_to_playlist(client: TestClient) -> None:
 
 
 def test_playlist_song_duplicate_link_does_not_duplicate_relation(client: TestClient) -> None:
+    """Verify linking the same song twice keeps a single relation."""
     song = create_song(client, title="Linked Song")
     playlist = create_playlist(client, name="Link Contract")
 
@@ -46,6 +52,7 @@ def test_playlist_song_duplicate_link_does_not_duplicate_relation(client: TestCl
 
 
 def test_playlist_song_unlink_removes_relation(client: TestClient) -> None:
+    """Verify unlinking removes the related song from the playlist."""
     song = create_song(client, title="Linked Song")
     playlist = create_playlist(client, name="Link Contract")
 
@@ -61,6 +68,7 @@ def test_playlist_song_unlink_removes_relation(client: TestClient) -> None:
 
 
 def test_playlist_song_repeated_unlink_is_idempotent(client: TestClient) -> None:
+    """Verify repeated unlink calls remain successful and idempotent."""
     song = create_song(client, title="Linked Song")
     playlist = create_playlist(client, name="Link Contract")
 
@@ -75,6 +83,7 @@ def test_playlist_song_repeated_unlink_is_idempotent(client: TestClient) -> None
 
 
 def test_playlist_song_link_returns_404_when_playlist_missing(client: TestClient) -> None:
+    """Verify linking fails when the playlist does not exist."""
     song = create_song(client, title="Existing Song")
 
     response = client.post(f"/playlists/99999/songs/{song['id']}")
@@ -84,6 +93,7 @@ def test_playlist_song_link_returns_404_when_playlist_missing(client: TestClient
 
 
 def test_playlist_song_link_returns_404_when_song_missing(client: TestClient) -> None:
+    """Verify linking fails when the song does not exist."""
     playlist = create_playlist(client, name="Existing Playlist")
 
     response = client.post(f"/playlists/{playlist['id']}/songs/99999")
@@ -93,6 +103,7 @@ def test_playlist_song_link_returns_404_when_song_missing(client: TestClient) ->
 
 
 def test_playlist_song_unlink_returns_404_when_playlist_missing(client: TestClient) -> None:
+    """Verify unlinking fails when the playlist does not exist."""
     song = create_song(client, title="Existing Song")
 
     response = client.delete(f"/playlists/99999/songs/{song['id']}")
@@ -102,6 +113,7 @@ def test_playlist_song_unlink_returns_404_when_playlist_missing(client: TestClie
 
 
 def test_playlist_song_unlink_returns_404_when_song_missing(client: TestClient) -> None:
+    """Verify unlinking fails when the song does not exist."""
     playlist = create_playlist(client, name="Existing Playlist")
 
     response = client.delete(f"/playlists/{playlist['id']}/songs/99999")
@@ -111,6 +123,7 @@ def test_playlist_song_unlink_returns_404_when_song_missing(client: TestClient) 
 
 
 def test_playlist_song_ids_patch_replaces_and_deduplicates_links(client: TestClient) -> None:
+    """Verify patch can replace playlist links while deduplicating ids."""
     first_song = create_song(client, title="First")
     second_song = create_song(client, title="Second")
 
@@ -134,6 +147,7 @@ def test_playlist_song_ids_patch_replaces_and_deduplicates_links(client: TestCli
 
 
 def test_playlist_song_relation_rejects_invalid_identifier_types(client: TestClient) -> None:
+    """Verify relationship endpoints reject invalid path parameter types."""
     invalid_playlist_id_response = client.post("/playlists/invalid/songs/1")
     assert invalid_playlist_id_response.status_code == 422
 

@@ -1,14 +1,16 @@
-# pylint: disable=not-callable,too-few-public-methods
+"""Song ORM model definitions."""
 
 from datetime import date, datetime
 
-from sqlalchemy import Date, DateTime, Integer, String, func
+from sqlalchemy import Date, DateTime, Integer, String, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base
 
 
 class Song(Base):
+    """Persisted song record exposed by the API."""
+
     __tablename__ = "songs"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
@@ -21,6 +23,18 @@ class Song(Base):
     release_year: Mapped[int | None] = mapped_column(Integer, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        server_default=func.now(),
+        server_default=text("(CURRENT_TIMESTAMP)"),
         nullable=False,
     )
+
+    def display_title(self) -> str:
+        """Return a human-readable title line for logs and debugging."""
+        return f"{self.artist} - {self.title}"
+
+    def release_reference(self) -> str | None:
+        """Return the most precise available release reference."""
+        if self.release_date is not None:
+            return self.release_date.isoformat()
+        if self.release_year is not None:
+            return str(self.release_year)
+        return None

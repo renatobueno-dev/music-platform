@@ -1,3 +1,5 @@
+"""Contract tests covering playlist CRUD behavior."""
+
 from fastapi.testclient import TestClient
 
 
@@ -5,6 +7,7 @@ def create_playlist(
     client: TestClient,
     **overrides: object,
 ) -> dict:
+    """Create one playlist through the API and return the response payload."""
     payload = playlist_expectations()
     payload.pop("songs")
     payload.update(overrides)
@@ -15,6 +18,7 @@ def create_playlist(
 
 
 def playlist_expectations(**overrides: object) -> dict[str, object]:
+    """Build the default expected playlist payload for assertions."""
     expected_payload = {
         "name": "Daily Mix",
         "description": "Work playlist",
@@ -29,22 +33,26 @@ def assert_playlist_payload(
     playlist: dict,
     expected: dict[str, object],
 ) -> None:
+    """Assert that a playlist payload matches the expected business fields."""
     actual_payload = {field_name: playlist[field_name] for field_name in expected}
     assert actual_payload == expected
 
 
 def assert_playlist_not_found(response) -> None:
+    """Assert that an API response represents a missing playlist."""
     assert response.status_code == 404
     assert response.json() == {"detail": "Playlist not found"}
 
 
 def test_playlist_create_returns_expected_payload(client: TestClient) -> None:
+    """Verify creating a playlist returns the expected serialized payload."""
     created_playlist = create_playlist(client)
 
     assert_playlist_payload(created_playlist, playlist_expectations())
 
 
 def test_playlist_list_includes_created_playlist(client: TestClient) -> None:
+    """Verify the playlist list endpoint includes newly created playlists."""
     created_playlist = create_playlist(client)
 
     list_response = client.get("/playlists/")
@@ -55,6 +63,7 @@ def test_playlist_list_includes_created_playlist(client: TestClient) -> None:
 
 
 def test_playlist_get_by_id_returns_created_playlist(client: TestClient) -> None:
+    """Verify fetching by id returns the created playlist."""
     created_playlist = create_playlist(client)
 
     read_response = client.get(f"/playlists/{created_playlist['id']}")
@@ -66,6 +75,7 @@ def test_playlist_get_by_id_returns_created_playlist(client: TestClient) -> None
 
 
 def test_playlist_patch_updates_only_expected_fields(client: TestClient) -> None:
+    """Verify patch only changes the targeted playlist fields."""
     created_playlist = create_playlist(client)
 
     patch_response = client.patch(
@@ -89,6 +99,7 @@ def test_playlist_patch_updates_only_expected_fields(client: TestClient) -> None
 
 
 def test_playlist_delete_removes_playlist(client: TestClient) -> None:
+    """Verify deleting a playlist removes it from subsequent reads."""
     created_playlist = create_playlist(client)
 
     delete_response = client.delete(f"/playlists/{created_playlist['id']}")
@@ -99,12 +110,14 @@ def test_playlist_delete_removes_playlist(client: TestClient) -> None:
 
 
 def test_playlist_get_missing_id_returns_404(client: TestClient) -> None:
+    """Verify reading an unknown playlist id returns HTTP 404."""
     response = client.get("/playlists/99999")
 
     assert_playlist_not_found(response)
 
 
 def test_playlist_patch_missing_id_returns_404(client: TestClient) -> None:
+    """Verify patching an unknown playlist id returns HTTP 404."""
     response = client.patch(
         "/playlists/99999",
         json={"description": "Any description"},
@@ -114,18 +127,21 @@ def test_playlist_patch_missing_id_returns_404(client: TestClient) -> None:
 
 
 def test_playlist_delete_missing_id_returns_404(client: TestClient) -> None:
+    """Verify deleting an unknown playlist id returns HTTP 404."""
     response = client.delete("/playlists/99999")
 
     assert_playlist_not_found(response)
 
 
 def test_playlist_create_missing_name_returns_422(client: TestClient) -> None:
+    """Verify missing required playlist fields are rejected by validation."""
     response = client.post("/playlists/", json={})
 
     assert response.status_code == 422
 
 
 def test_playlist_create_extra_field_returns_422(client: TestClient) -> None:
+    """Verify unknown playlist fields are rejected by validation."""
     response = client.post(
         "/playlists/",
         json={
@@ -138,6 +154,7 @@ def test_playlist_create_extra_field_returns_422(client: TestClient) -> None:
 
 
 def test_playlist_patch_empty_name_returns_422(client: TestClient) -> None:
+    """Verify empty playlist names are rejected during patch."""
     created_playlist = create_playlist(client, name="Patch Validation")
 
     response = client.patch(
@@ -149,6 +166,7 @@ def test_playlist_patch_empty_name_returns_422(client: TestClient) -> None:
 
 
 def test_playlist_patch_invalid_song_ids_returns_422(client: TestClient) -> None:
+    """Verify invalid playlist song identifiers are rejected."""
     created_playlist = create_playlist(client, name="Patch Validation")
 
     response = client.patch(
@@ -160,6 +178,7 @@ def test_playlist_patch_invalid_song_ids_returns_422(client: TestClient) -> None
 
 
 def test_playlist_create_nonexistent_song_ids_returns_404(client: TestClient) -> None:
+    """Verify create rejects song ids that do not exist."""
     response = client.post(
         "/playlists/",
         json={
@@ -173,6 +192,7 @@ def test_playlist_create_nonexistent_song_ids_returns_404(client: TestClient) ->
 
 
 def test_playlist_patch_nonexistent_song_ids_returns_404(client: TestClient) -> None:
+    """Verify patch rejects replacement song ids that do not exist."""
     created_playlist = create_playlist(client, name="Patch Missing Song")
 
     response = client.patch(

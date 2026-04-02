@@ -20,8 +20,7 @@ def validate_database_url(database_url: str) -> str:
         ) from exc
 
     if not (
-        parsed_url.drivername.startswith("sqlite")
-        or parsed_url.drivername.startswith("postgresql")
+        parsed_url.drivername.startswith("sqlite") or parsed_url.drivername.startswith("postgresql")
     ):
         raise RuntimeError(
             f"Invalid DATABASE_URL scheme '{parsed_url.drivername}'. Use sqlite or postgresql."
@@ -41,12 +40,12 @@ engine = create_engine(
     connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {},
 )
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SESSION_FACTORY = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def get_session() -> Generator[Session, None, None]:
     """Yield a request-scoped SQLAlchemy session and close it afterwards."""
-    session = SessionLocal()
+    session = SESSION_FACTORY()
     try:
         yield session
     finally:
