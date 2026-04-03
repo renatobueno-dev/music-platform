@@ -122,7 +122,7 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
 
 ## 🐳 Docker Setup
 
-**Prerequisites:** Docker and Docker Compose installed.
+**Prerequisites:** Docker and Docker Compose installed, plus a local Python virtual environment with the project dependencies if you want to run the documented host-side Alembic command.
 
 1. **Copy the environment file and load it into your shell**
 
@@ -142,8 +142,7 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
 3. **Run migrations from local virtualenv against Compose database**
 
    ```bash
-   export DATABASE_URL="${DATABASE_URL_HOST}"
-   ./.venv/bin/alembic upgrade head
+   DATABASE_URL="${DATABASE_URL_HOST}" ./.venv/bin/alembic upgrade head
    ```
 
    This keeps the host-side Alembic command aligned with the same credentials as Docker Compose while still using `localhost` as the host-side endpoint.
@@ -170,7 +169,7 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
    docker compose down -v   # wipes PostgreSQL data
    ```
 
-API available at: `http://localhost:8000/`
+API available at: `http://localhost:<API_PORT>/` where `API_PORT` defaults to `8000`.
 
 ---
 

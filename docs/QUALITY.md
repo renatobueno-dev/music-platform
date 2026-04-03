@@ -111,6 +111,12 @@ Use the layered quality runner when you want validation without guessing which c
 
 `./scripts/check-quality.sh` is intentionally read-only. Use `./scripts/format-all.sh` when you want automatic file rewrites.
 
+Local prerequisites by layer:
+
+- `fast` and `python` assume the project `.venv` is installed with runtime and development dependencies.
+- `security` also requires Docker locally because the pinned `lychee` runner is executed through a container wrapper.
+- `infra` also requires Docker, Helm, and Terraform in your local PATH.
+
 Layer meaning:
 
 - `fast`: read-only text hygiene checks, Prettier, markdownlint, yamllint, Ruff, actionlint, hadolint, shfmt, shellcheck, dotenv-linter

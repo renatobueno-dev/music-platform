@@ -10,6 +10,7 @@ The target is not only "it works on my machine", but "it works the same way in c
 ## 🛠️ Prerequisites
 
 - Docker Desktop (or Docker Engine + Compose) installed and running.
+- Local Python virtualenv (`.venv`) with the project dependencies installed, because the guide uses host-side Alembic commands to prepare the migration-owned database file.
 - Project root as current directory:
   - `.../13_checkpoint_nivel_3`
 

@@ -139,6 +139,8 @@ Runtime rule: `DATABASE_URL` is required, and startup validates schema presence 
 
 ## How to run with Docker
 
+The migration step below still runs from your host Python environment. If you have not already done the local setup once, create `.venv` and install the project dependencies first.
+
 ```bash
 cp .env.example .env
 # Load the same values Compose will use into the current shell
@@ -146,12 +148,11 @@ set -a
 source .env
 set +a
 docker compose up -d db
-export DATABASE_URL="${DATABASE_URL_HOST}"
-./.venv/bin/alembic upgrade head
+DATABASE_URL="${DATABASE_URL_HOST}" ./.venv/bin/alembic upgrade head
 docker compose up -d api
 ```
 
-API: `http://localhost:8000/`
+API: `http://localhost:<API_PORT>/` where `API_PORT` defaults to `8000`.
 
 The API container expects a valid `DATABASE_URL` and a migrated database. If the schema is missing, startup fails fast with a migration instruction instead of creating tables automatically. Keep `.env` `DATABASE_URL` values URL-safe if the password includes reserved URL characters.
 
@@ -224,6 +225,12 @@ Repo-wide formatting and linting are available through the layered quality scrip
 ```
 
 `./scripts/check-quality.sh` is read-only. If you want the repo rewritten into the expected format, use `./scripts/format-all.sh`.
+
+Local prerequisites by layer:
+
+- `fast` and `python` assume the project `.venv` is installed with the repo dependencies.
+- `security` also needs Docker locally because the `lychee` wrapper runs through a container image.
+- `infra` also needs Docker, Helm, and Terraform available on your machine.
 
 Python quality has explicit boundaries in this project:
 

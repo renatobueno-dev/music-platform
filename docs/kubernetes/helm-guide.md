@@ -49,7 +49,7 @@ helm/music-platform/
 - API health probes (`startup`, `readiness`, `liveness`) for startup and runtime stability.
 - DB image repo/tag/pull policy.
 - DB name/user/password and `db.existingSecret` for externally managed runtime credentials.
-- DB service port, persistence toggle, storage size, optional storage class, and resource requests/limits.
+- DB service port, probe tuning (`db.probes.*`), persistence toggle, storage size, optional storage class, and resource requests/limits.
 
 ## ⏱️ Probe tuning for smoother startup
 
@@ -72,6 +72,24 @@ api:
 ```
 
 This gives the container up to ~65 seconds to finish startup before Kubernetes treats it as failed.
+
+The PostgreSQL StatefulSet also exposes configurable probe timing under `db.probes.*`:
+
+- `startupProbe`: lets PostgreSQL finish bootstrapping before readiness/liveness enforcement begins.
+- `readinessProbe`: controls when the DB is considered ready to accept traffic.
+- `livenessProbe`: restarts the DB container if it becomes unresponsive.
+
+Default DB startup values in `values.yaml`:
+
+```yaml
+db:
+  probes:
+    startup:
+      initialDelaySeconds: 0
+      periodSeconds: 5
+      timeoutSeconds: 3
+      failureThreshold: 12
+```
 
 ## ✅ Validate chart locally
 

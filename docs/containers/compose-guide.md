@@ -17,6 +17,8 @@ Compose must include:
 - explicit `DATABASE_URL` pointing from `api` to `db` service name.
 - Service dependency/health strategy (`depends_on` + DB healthcheck).
 
+This workflow still uses the host Python environment for the Alembic step, so keep `.venv` and the project dependencies available locally before running it.
+
 Commands:
 
 ```bash
@@ -25,8 +27,7 @@ set -a
 source .env
 set +a
 docker compose up -d --build db
-export DATABASE_URL="${DATABASE_URL_HOST}"
-./.venv/bin/alembic upgrade head
+DATABASE_URL="${DATABASE_URL_HOST}" ./.venv/bin/alembic upgrade head
 docker compose up -d api
 docker compose ps
 ```
@@ -41,11 +42,11 @@ Notes:
 Validation:
 
 ```bash
-curl http://127.0.0.1:8000/health
-curl -X POST http://127.0.0.1:8000/songs/ \
+curl "http://127.0.0.1:${API_PORT:-8000}/health"
+curl -X POST "http://127.0.0.1:${API_PORT:-8000}/songs/" \
   -H "Content-Type: application/json" \
   -d '{"title":"Compose Song","artist":"Compose Tester"}'
-curl http://127.0.0.1:8000/songs/
+curl "http://127.0.0.1:${API_PORT:-8000}/songs/"
 docker compose exec -T db psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -c "SELECT COUNT(*) FROM songs;"
 ```
 

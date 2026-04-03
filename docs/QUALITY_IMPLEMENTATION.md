@@ -190,16 +190,18 @@ That earlier run passed end-to-end, including:
 - Istio render validation
 - Terraform format and validation
 
-Notable results from that earlier checkpoint run:
+The repository has since been rerun successfully after the default-baseline alignment and follow-up fixes.
+
+Current confirmed results from the full layered run:
 
 - `pylint` score: `10.00/10`
 - `radon` average complexity: `A`
-- `pytest`: `38 passed`
+- `pytest`: `46 passed`
+- fast checks: passed
+- security layer: passed
 - Docker build: passed
 - Terraform validate: passed
 - Helm lint: passed with informational guidance that an icon is recommended in `Chart.yaml`
-
-After the switch to default `pylint` and default `radon`, the verification commands should be rerun. That rerun has not been executed in this edit pass.
 
 ### Current implementation note
 
@@ -212,7 +214,7 @@ The repo's current automation now follows the stricter target directly:
 That distinction matters:
 
 - the implemented workflow now matches the intended "full-quality" Python baseline instead of only pointing to it conceptually
-- a fresh validation pass is still the next step before claiming the new default-baseline workflow is fully green
+- the current repo state has already been rerun successfully against that stricter baseline
 
 ---
 
