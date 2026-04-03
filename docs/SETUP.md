@@ -159,7 +159,7 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
    # Tail logs until "Application startup complete" appears
    docker compose logs -f api
    # Check health endpoint
-   curl http://localhost:8000/health
+   curl "http://localhost:${API_PORT:-8000}/health"
    ```
 
 6. **Tear down** (add `-v` to also remove the database volume)

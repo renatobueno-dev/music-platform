@@ -54,7 +54,7 @@ Checkpoint:
 
 - Both services are running.
 - API can read/write data with DB.
-- Host-to-API mapping (`localhost:8000 -> api:8000`) works.
+- Host-to-API mapping (`localhost:${API_PORT:-8000} -> api:8000`) works.
 - Schema has been applied through Alembic before API startup.
 
 ## ✅ Step E - Validate logs

@@ -4,6 +4,9 @@ ignore: |
   .venv/
   .pytest_cache/
   .ruff_cache/
+  .pre-commit-cache/
+  .tools/
+  .audit/
   .terraform/
   helm/music-platform/templates/
 

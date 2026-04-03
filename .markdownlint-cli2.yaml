@@ -2,6 +2,9 @@ ignores:
   - ".venv/**"
   - ".pytest_cache/**"
   - ".ruff_cache/**"
+  - ".pre-commit-cache/**"
+  - ".tools/**"
+  - ".audit/**"
 
 config:
   MD013: false
