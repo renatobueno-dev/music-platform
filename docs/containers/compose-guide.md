@@ -14,7 +14,7 @@ Compose must include:
 
 - `api` service (FastAPI container).
 - `db` service (PostgreSQL container).
-- `DATABASE_URL` pointing from `api` to `db` service name.
+- explicit `DATABASE_URL` pointing from `api` to `db` service name.
 - Service dependency/health strategy (`depends_on` + DB healthcheck).
 
 Commands:
@@ -25,11 +25,18 @@ set -a
 source .env
 set +a
 docker compose up -d --build db
-export DATABASE_URL=postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}
+export DATABASE_URL="${DATABASE_URL_HOST}"
 ./.venv/bin/alembic upgrade head
 docker compose up -d api
 docker compose ps
 ```
+
+Notes:
+
+- `.env` keeps two connection strings on purpose:
+  - `DATABASE_URL` for the API container, which must reach PostgreSQL through the Compose service host `db`
+  - `DATABASE_URL_HOST` for host-side Alembic commands, which must reach PostgreSQL through `localhost`
+- If the password contains reserved URL characters, URL-encode it in both values instead of relying on Compose to rebuild the URL from raw password parts.
 
 Validation:
 

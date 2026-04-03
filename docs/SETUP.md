@@ -18,27 +18,25 @@ To use PostgreSQL locally, copy `.env.example` and set values:
 cp .env.example .env
 ```
 
-| Variable            | Default in `.env.example` | Description                                           |
-| ------------------- | ------------------------- | ----------------------------------------------------- |
-| `POSTGRES_DB`       | `music_platform`          | Database name                                         |
-| `POSTGRES_USER`     | `postgres`                | Database user                                         |
-| `POSTGRES_PASSWORD` | `postgres`                | Database password                                     |
-| `POSTGRES_PORT`     | `5432`                    | PostgreSQL port (host-side) — **Docker Compose only** |
-| `API_PORT`          | `8000`                    | API port exposed on host — **Docker Compose only**    |
+| Variable            | Default in `.env.example`                                              | Description                                                                  |
+| ------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `POSTGRES_DB`       | `music_platform`                                                       | Database name                                                                |
+| `POSTGRES_USER`     | `postgres`                                                             | Database user                                                                |
+| `POSTGRES_PASSWORD` | `postgres`                                                             | Database password                                                            |
+| `POSTGRES_PORT`     | `5432`                                                                 | PostgreSQL port (host-side) — **Docker Compose only**                        |
+| `API_PORT`          | `8000`                                                                 | API port exposed on host — **Docker Compose only**                           |
+| `DATABASE_URL`      | `postgresql+psycopg://postgres:postgres@db:5432/music_platform`        | API runtime connection string used inside Docker Compose                     |
+| `DATABASE_URL_HOST` | `postgresql+psycopg://postgres:postgres@localhost:5432/music_platform` | Host-side helper URL for local Alembic commands against the Compose database |
 
 > `API_PORT` and `POSTGRES_PORT` are used exclusively by Docker Compose for host-side port mapping. They do not affect Kubernetes directly; cluster port configuration is controlled through Helm chart values such as `api.service.port` and `db.service.port`.
-
-`DATABASE_URL` is assembled by Docker Compose from the individual variables:
-
-```text
-postgresql+psycopg://<POSTGRES_USER>:<POSTGRES_PASSWORD>@db:5432/<POSTGRES_DB>
-```
 
 For local use with `uvicorn`, set `DATABASE_URL` directly if connecting to PostgreSQL:
 
 ```text
 DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/music_platform
 ```
+
+If the database password contains reserved URL characters such as `@`, `#`, `?`, or `&`, URL-encode it in both `DATABASE_URL` and `DATABASE_URL_HOST`.
 
 ### Startup tuning variables
 
@@ -144,11 +142,11 @@ Full boundary policy: [SECRETS_OWNERSHIP.md](./SECRETS_OWNERSHIP.md).
 3. **Run migrations from local virtualenv against Compose database**
 
    ```bash
-   export DATABASE_URL=postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}
+   export DATABASE_URL="${DATABASE_URL_HOST}"
    ./.venv/bin/alembic upgrade head
    ```
 
-   This keeps the host-side Alembic command aligned with the same values Docker Compose is using for the database container.
+   This keeps the host-side Alembic command aligned with the same credentials as Docker Compose while still using `localhost` as the host-side endpoint.
 
 4. **Start API service**
 

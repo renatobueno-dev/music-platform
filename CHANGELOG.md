@@ -11,19 +11,24 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- None yet.
+- Repository-wide full-quality tooling foundation with Ruff, Prettier, markdownlint, yamllint, shfmt, ShellCheck, actionlint, hadolint, dotenv-linter, pre-commit hooks, and helper scripts for local quality workflows.
+- Dedicated quality/security implementation guides documenting the layered validation model and the staged security-toolchain rollout.
 
 ### Changed
 
-- None yet.
+- Python quality now targets the default `pylint` and default `radon` baseline directly, with codebase cleanup aligned to those reports.
+- GitHub Actions validation is now split into `fast-quality`, `python-quality`, `security-validation`, and `runtime-validation` before deploy.
+- Repository docs were synchronized with the current quality model, CI layers, and static-analysis history, including the historical transition from local-only static analysis to CI enforcement.
+- Docker Compose now consumes explicit database URLs instead of assembling them from raw `POSTGRES_*` variables, and the setup docs now distinguish container-facing and host-facing connection strings.
 
 ### Fixed
 
-- None yet.
+- Post-split fast-quality regressions in shell tooling and documentation formatting were cleaned up so `./scripts/check-quality.sh all` passes end to end again.
+- API docs now explicitly describe the current unauthenticated project scope and the deduplication behavior for repeated `song_ids` in playlist create/update flows.
 
 ### Security
 
-- None yet.
+- Added enforced repository security validation with `gitleaks`, `pip-audit`, `lychee`, and tuned `bandit`, while documenting `trivy` as the next staged hardening phase.
 
 ## [1.7.0] — 2026-03-31
 

@@ -29,6 +29,7 @@ This repository is for study. Before using in production:
 - Use strong, real secrets in environment variables — never commit `.env`
 - Set `DATABASE_URL` and all credentials via injected secrets, not hardcoded defaults
 - Restrict CORS origins and rotate all credentials before exposure
+- Authentication and authorization are intentionally out of scope in the current study version, so all API endpoints are unauthenticated by design
 
 ---
 
@@ -145,14 +146,14 @@ set -a
 source .env
 set +a
 docker compose up -d db
-export DATABASE_URL=postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}
+export DATABASE_URL="${DATABASE_URL_HOST}"
 ./.venv/bin/alembic upgrade head
 docker compose up -d api
 ```
 
 API: `http://localhost:8000/`
 
-The API container expects a valid `DATABASE_URL` and a migrated database. If the schema is missing, startup fails fast with a migration instruction instead of creating tables automatically.
+The API container expects a valid `DATABASE_URL` and a migrated database. If the schema is missing, startup fails fast with a migration instruction instead of creating tables automatically. Keep `.env` `DATABASE_URL` values URL-safe if the password includes reserved URL characters.
 
 ---
 
@@ -170,7 +171,9 @@ The API container expects a valid `DATABASE_URL` and a migrated database. If the
 | `DELETE`           | `/playlists/{playlist_id}/songs/{song_id}` | Unlink song from playlist      |
 
 Playlist `PATCH` accepts optional `song_ids` — if provided, links are replaced; if omitted, unchanged.
+Repeated `song_ids` are silently deduplicated before links are resolved.
 Non-existent IDs return `404`.
+All endpoints are currently unauthenticated in this study project.
 
 ---
 

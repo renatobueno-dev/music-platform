@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: music-api
     environment:
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-music_platform}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://postgres:postgres@db:5432/music_platform}
     ports:
       - "${API_PORT:-8000}:8000"
     depends_on:
